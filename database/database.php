@@ -5,7 +5,7 @@ namespace DATABASE;
  * Class Database
  * @package DATABASE
  * @author Christian Vinding Rasmussen
- * Database >;)
+ * TODO description Database >;)
  */
 class Database {
 
@@ -20,8 +20,7 @@ class Database {
     private $query = null;
 
     /**
-     * Database constructor.
-     * Used for loading the Database config file
+     * __construct() is used for loading the Database config file
      * Also used for creating a connection to the database
      */
     public function __construct() {
@@ -46,7 +45,7 @@ class Database {
      * @param array $bindable
      * @return $this
      */
-    public function query($query, $bindable = []) {
+    public function query(string $query, array $bindable = []) : Database {
         try {
 
             // Prepare the query
@@ -75,7 +74,7 @@ class Database {
      * fetchArray() is a method for returning all selected rows as an associate array
      * @return array
      */
-    public function fetchArray() {
+    public function fetchArray() : array {
         // Fetch the data
         $data = $this->query->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -90,7 +89,7 @@ class Database {
      * fetchNumericArray() is a method for returning all selected rows as a numeric array
      * @return array
      */
-    public function fetchNumericArray() {
+    public function fetchNumericArray() : array {
         // Fetch the data
         $data = $this->query->fetchAll(\PDO::FETCH_NUM);
 
@@ -103,15 +102,14 @@ class Database {
 
     /**
      * affectedRows() is a method for returning the row count of all affected rows
-     * @return mixed
+     * @return int
      */
-    public function affectedRows() {
+    public function affectedRows() : int {
         return $this->query->rowCount();
     }
 
     /**
-     * Database destructor.
-     * Closes the connection
+     * __destruct() closes the connection
      */
     public function __destruct() {
         $this->connection = NULL;

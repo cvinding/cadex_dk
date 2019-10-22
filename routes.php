@@ -19,6 +19,11 @@ $router->put("/product/update/(\d+)", "Product@update");
 
 $router->delete("/product/delete/(\d+)", "Product@delete");
 
+$router->post("/product/uploadImage/(\d+)", "Product@uploadImage");
+
+//$router->put("/product/uploadImages/(\d+)", "Product@uploadImages");
+
+
 /*$router->get("/product/get", function(Request $request) {
     return (new \VIEW\ProductView($request))->get();
 });*/

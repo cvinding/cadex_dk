@@ -21,9 +21,7 @@ class Database {
     private $query = null;
 
     /**
-     * Database constructor.
-     * Load database config.
-     * Create connection.
+     * __construct() loads database config and create connection.
      */
     public function __construct() {
 
@@ -51,9 +49,9 @@ class Database {
      * query() is used for querying SQL syntax
      * @param string $sql
      * @param array $bindable
-     * @return $this
+     * @return Database
      */
-    public function query($sql, $bindable = []) {
+    public function query(string $sql, array $bindable = []) : Database {
 
         if(!empty($bindable)) {
 
@@ -95,11 +93,11 @@ class Database {
     /**
      * formatQuery() is a method for creating support for named placeholders.
      * e.g. "SELECT * FROM news WHERE id = :id" turns into => "SELECT * FROM news WHERE id = ?"
-     * @param $sql
-     * @param $bindable
+     * @param string $sql
+     * @param array $bindable
      * @return array
      */
-    private function formatQuery($sql, $bindable) {
+    private function formatQuery(string $sql, array $bindable) : array {
 
         $tempBindable = [];
 
@@ -173,7 +171,7 @@ class Database {
      * fetchAssoc() is used for returning the data as an associate array
      * @return array
      */
-    public function fetchAssoc() {
+    public function fetchAssoc() : array {
 
         // Get result
         $this->query = $this->query->get_result();
@@ -193,7 +191,7 @@ class Database {
      * fetchArray() is used for returning the data as a numeric array
      * @return array
      */
-    public function fetchArray() {
+    public function fetchArray() : array {
 
         // Get Result
         $this->query = $this->query->get_result();
@@ -213,13 +211,12 @@ class Database {
      * affectedRows() is used for returning the number of rows affected
      * @return int
      */
-    public function affectedRows() {
+    public function affectedRows() : int {
         return $this->query->affected_rows;
     }
 
     /**
-     * Database destructor.
-     * Used for closing the connection when done with the class.
+     * __destruct() is used for closing the connection when done with the class.
      */
     public function __destruct(){
         $this->connection->close();

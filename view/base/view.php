@@ -9,8 +9,17 @@ class View {
         $this->request = $request;
     }
 
-    public function __call($name, $parameters) {
-        $message = \HELPER\MessageHandler::getMessages()[0];
+    public function __call(string $name, array $parameters) {
+
+        $messages = \HELPER\MessageHandler::getMessages();
+
+        if(!isset($messages[0])) {
+            http_response_code(500);
+            
+            exit(json_encode(["result" => "No message", "status" => false]));
+        }
+
+        $message = $messages[0];
 
         http_response_code($message["httpCode"]);
     

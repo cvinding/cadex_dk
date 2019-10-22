@@ -17,7 +17,7 @@ return [
 
     "PASSWORD" => "admin",
 
-    "DATABASE" => "api_example_local",
+    "DATABASE" => "api_cadex_dk",
 
     "CHARSET" => "utf8mb4"
 

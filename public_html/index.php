@@ -7,8 +7,8 @@ ini_set('display_startup_errors', "On");
 error_reporting(E_ALL);
 
 // Output will always be JSON
-header('Content-Type: application/json');
-
+//header('Content-Type: application/json');
+header("Content-Type: image/png");
 // Define APP_ROOT
 $DOCUMENT_ROOT = explode("/", $_SERVER["DOCUMENT_ROOT"]);
 array_pop($DOCUMENT_ROOT);
@@ -39,10 +39,12 @@ try {
 
 } catch (\TypeError $typeError) {
 
-    http_response_code(400);
-    // Output a JSON response for failing to use requested variable types
-    exit(json_encode(["result" => "Malformed request syntax!", "status" => false]));
+    exit($typeError);
 
-} catch (\Exception $exception){
+    //http_response_code(400);
+    // Output a JSON response for failing to use requested variable types
+    //exit(json_encode(["result" => "Malformed request syntax!", "status" => false]));
+
+} catch (\Exception $exception) {
     exit($exception);
 } 

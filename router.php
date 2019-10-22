@@ -66,6 +66,11 @@ class Router {
         // Get all available routes 
         $availableRoutes = $this->{strtolower($request->requestMethod)};
 
+        // Check if class/action exists in available routes
+        if(!isset($availableRoutes[$request->class]) || !isset($availableRoutes[$request->class][$request->action])) {
+            return false;
+        }
+
         // Narrow it down to all the routes we have to loop through
         $routes = $availableRoutes[$request->class][$request->action];
 

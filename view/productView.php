@@ -46,6 +46,8 @@ class ProductView extends \VIEW\BASE\View {
             $data = $this->productModel->getProduct($id);
         }
 
+        echo "<img src='{$data[0]["image"]}'>";
+die;
         if(!empty($data)) {
             http_response_code(200);
         } else {

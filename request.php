@@ -79,7 +79,7 @@ class Request {
             $body = $json;            
 
         // If content type is not 'application/json' and not nothing, then set $body to $_POST
-        } else if($this->contentType !== "" && $this->requestMethod === "POST") {
+        } else if(($this->contentType !== "" && $this->contentType !== "text/plain") && $this->requestMethod === "POST") {
 
             $body = $_POST;
 
@@ -100,9 +100,13 @@ class Request {
         // Else set an empty $body
         } else {
 
-            $body = [];
+            if(!is_array($input)) {
+                $input = [$input];
+            }
+
+            $body = $input;
         }
-        
+
         // Return the request body
         return $body;
     }

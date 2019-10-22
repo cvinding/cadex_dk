@@ -1,12 +1,22 @@
 <?php
 
+/**
+ * class Dispatcher
+ * @author Christian Vinding Rasmussen
+ * TODO description
+ */
 class Dispatcher {
 
     /**
+     * An instance of the Router class
      * @var Router $router
      */
     private $router;
 
+    /**
+     * __construct() is used to create an instance of the Router class
+     * @param Router $router
+     */
     public function __construct(Router $router) {
         $this->router = $router;
     }
@@ -24,7 +34,6 @@ class Dispatcher {
             exit($handler($request));
         }
 
-
         $explodedHandler = explode("@", $handler);
 
         $classToCall = $explodedHandler[0];
@@ -34,8 +43,7 @@ class Dispatcher {
 
         if(isset($classes["CONTROLLER"])) {
             
-            $reflection = new \ReflectionClass($classes["CONTROLLER"]);
-                
+            $reflection = new \ReflectionClass($classes["CONTROLLER"]);                
 
             if($reflection->hasMethod($actionToCall)) {
                 call_user_func_array([new $classes["CONTROLLER"](), $actionToCall], array_merge($request->uriArgs, $request->getBody()));

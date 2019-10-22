@@ -27,7 +27,7 @@ class ProductModel extends \MODEL\BASE\Model {
      * @return array
      */
     public function getProducts() : array {
-        return $this->database->query("SELECT id, name, price FROM products")->fetchAssoc();
+        return $this->database->query("SELECT DISTINCT p.id, p.name, p.description, p.price, pi.image FROM products p LEFT JOIN product_images pi ON p.id = pi.products_id")->fetchAssoc();
     }
 
     /**
@@ -36,27 +36,29 @@ class ProductModel extends \MODEL\BASE\Model {
      * @return array
      */
     public function getProduct(int $id) : array {
-        return $this->database->query("SELECT id, name, price FROM products WHERE id = :id",["id" => $id])->fetchAssoc();
+        return $this->database->query("SELECT id, name, description, price FROM products WHERE id = :id",["id" => $id])->fetchAssoc();
     }
 
     /**
      * createProduct() inserts a new database entry for products and then returns true/false based on outcome
      * @param string $name
-     * @param int $price
+     * @param string $description
+     * @param float $price
      * @return bool
      */
-    public function createProduct(string $name, int $price) : bool {
-        return ($this->database->query("INSERT INTO products (name, price) VALUES (:name, :price)", ["name" => $name, "price" => $price])->affectedRows() > 0);
+    public function createProduct(string $name, string $description, float $price) : bool {
+        return ($this->database->query("INSERT INTO products (name, description, price) VALUES (:name, :description, :price)", ["name" => $name, "description" => $description, "price" => $price])->affectedRows() > 0);
     }
 
     /**
      * updateProduct() updates the specified product
      * @param int $id
      * @param string $name
-     * @param int $price
+     * @param string $description
+     * @param float $price
      * @return bool
      */
-    public function updateProduct(int $id, string $name, int $price) : bool {
+    public function updateProduct(int $id, string $name, string $description, float $price, array $imagesToDelete = []) : bool {
 
         // Select entry to see if exists
         $entry = $this->database->query("SELECT id FROM products WHERE id = :id", ["id" => $id])->fetchAssoc();
@@ -67,10 +69,22 @@ class ProductModel extends \MODEL\BASE\Model {
         }
 
         // Update the entry
-        $this->database->query("UPDATE products SET name = :name, price = :price WHERE id = :id", ["name" => $name, "price" => $price, "id" => $id])->affectedRows();
+        $this->database->query("UPDATE products SET name = :name, description = :description, price = :price WHERE id = :id", ["name" => $name, "description" => $description, "price" => $price, "id" => $id])->affectedRows();
 
         // Return true
         return true;
+    }
+
+    public function uploadImage(int $id, string $image = "") {
+
+        if($image === "") {
+            $image = $_FILES["file"];
+        }
+
+        $image = "data:image/png;base64," . base64_encode(file_get_contents($image['tmp_name']));
+        
+        $this->database->query("INSERT INTO product_images (products_id, image) VALUES(:id, :image)", ["id" => $id, "image" => $image])->affectedRows();
+
     }
 
     /**
