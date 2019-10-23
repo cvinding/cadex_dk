@@ -11,15 +11,15 @@ class ProductController extends \CONTROLLER\BASE\Controller {
 
     /**
      * An instance of this controller's model
-     * @var \MODEL\ProductModel $model
+     * @var \MODEL\ProductModel $productModel
      */
-    private $model;
+    private $productModel;
 
     /**
      * __construct() is used for setting the $model this controller will be using
      */
     public function __construct() {
-        $this->model = new \MODEL\ProductModel();
+        $this->productModel = new \MODEL\ProductModel();
     }
 
     /**
@@ -32,7 +32,7 @@ class ProductController extends \CONTROLLER\BASE\Controller {
     public function create(string $name, string $description, float $price) : void {
     
         // Try and create a new product
-        $result = $this->model->createProduct($name, $description, $price);
+        $result = $this->productModel->createProduct($name, $description, $price);
 
         // Attach message based on outcome
         if($result) {
@@ -52,7 +52,7 @@ class ProductController extends \CONTROLLER\BASE\Controller {
     public function uploadImage(int $id, string $thumbnail, string $image = "") {
 
         // Upload image
-        $status = $this->model->uploadImage($id, $thumbnail, $image);
+        $status = $this->productModel->uploadImage($id, $thumbnail, $image);
 
         // Send the appropriate message
         switch ($status) {
@@ -75,7 +75,7 @@ class ProductController extends \CONTROLLER\BASE\Controller {
     }
 
     /**
-     * update() is used to call the $model for updating products
+     * update() is used to call the $productModel for updating products
      * @param int $id
      * @param string $name
      * @param string $description
@@ -86,10 +86,11 @@ class ProductController extends \CONTROLLER\BASE\Controller {
     public function update(int $id, string $name, string $description, float $price, array $imagesToDelete = []) : void {
 
         // Try and update the product
-        $result = $this->model->updateProduct($id, $name, $description, $price);
+        $result = $this->productModel->updateProduct($id, $name, $description, $price);
 
+        // Delete images if there are any
         if(!empty($imagesToDelete)) {
-            $this->model->deleteImages($imagesToDelete);
+            $this->productModel->deleteImages($imagesToDelete);
         }
 
         // Attach message based on outcome
@@ -106,7 +107,7 @@ class ProductController extends \CONTROLLER\BASE\Controller {
     public function delete(int $id) {
 
         // Try and delete the product
-        $result = $this->model->deleteProduct($id);
+        $result = $this->productModel->deleteProduct($id);
 
         // Attach message based on outcome
         if($result) {

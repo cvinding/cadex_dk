@@ -31,7 +31,7 @@ class Database {
 
             // Check if specified driver is 'mysql'
             if($config["DATABASE_DRIVER"] !== "mysql") {
-                Throw new \Exception("Specified DATABASE_DRIVER does not support mysql database");
+                throw new \Exception("Specified DATABASE_DRIVER does not support mysql database");
             }
 
         } catch (\Exception $exception) {

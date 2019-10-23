@@ -5,17 +5,18 @@ namespace HELPER;
  * Class ConfigLoader
  * @package HELPER
  * @author Christian Vinding Rasmussen
- * ConfigLoader is unsurprisingly used for loading config files, from the /config directory
+ * ConfigLoader is unsurprisingly used for loading config files, from the config/ directory
  */
 class ConfigLoader {
 
     /**
-     * @param $file
+     * load() is used to load config files from the config/ directory
+     * @param string $file
      * @param array $requiredKeys
-     * @return mixed
+     * @return array
      * @throws \Exception
      */
-    public static function load($file, $requiredKeys = []) {
+    public static function load(string $file, array $requiredKeys = []) : array {
 
         // Create full path to config file
         $fullPath = APP_ROOT."/{$file}";
@@ -35,7 +36,7 @@ class ConfigLoader {
 
             // Check if file exists
             if(!file_exists($file)) {
-                Throw new \Exception("Missing '{$name}' config file");
+                throw new \Exception("Missing '{$name}' config file");
             }
 
         }else {
@@ -50,7 +51,7 @@ class ConfigLoader {
         foreach($requiredKeys as $key) {
 
             if(!isset($config[$key])) {
-                Throw new \Exception("Missing required key '{$key}' in '{$name}'");
+                throw new \Exception("Missing required key '{$key}' in '{$name}'");
             }
         }
 
