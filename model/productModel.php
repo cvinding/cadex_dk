@@ -27,7 +27,7 @@ class ProductModel extends \MODEL\BASE\Model {
      * @return array
      */
     public function getProducts() : array {
-        return $this->database->query("SELECT DISTINCT p.id, p.name, p.description, p.price, pi.image FROM products p LEFT JOIN product_images pi ON p.id = pi.products_id")->fetchAssoc();
+        return $this->database->query("SELECT p.id, p.name, p.description, p.price, pi.image, pi.type FROM products p LEFT JOIN product_images pi ON p.id = pi.products_id AND pi.thumbnail = 1")->fetchAssoc();
     }
 
     /**
@@ -36,7 +36,23 @@ class ProductModel extends \MODEL\BASE\Model {
      * @return array
      */
     public function getProduct(int $id) : array {
-        return $this->database->query("SELECT id, name, description, price FROM products WHERE id = :id",["id" => $id])->fetchAssoc();
+
+        // Select product
+        $product = $this->database->query("SELECT id, name, description, price FROM products WHERE id = :id",["id" => $id])->fetchAssoc();
+
+        // If product does not exists return empty array
+        if(empty($product)) {
+            return [];
+        }
+
+        // Select images for the product
+        $images = $this->database->query("SELECT image, type, thumbnail FROM product_images WHERE products_id = :id ORDER BY thumbnail DESC",["id" => $id])->fetchAssoc();
+
+        // Add images into product array
+        $product[0]["images"] = $images;
+
+        // return product
+        return $product; 
     }
 
     /**
@@ -58,7 +74,7 @@ class ProductModel extends \MODEL\BASE\Model {
      * @param float $price
      * @return bool
      */
-    public function updateProduct(int $id, string $name, string $description, float $price, array $imagesToDelete = []) : bool {
+    public function updateProduct(int $id, string $name, string $description, float $price) : bool {
 
         // Select entry to see if exists
         $entry = $this->database->query("SELECT id FROM products WHERE id = :id", ["id" => $id])->fetchAssoc();
@@ -75,16 +91,80 @@ class ProductModel extends \MODEL\BASE\Model {
         return true;
     }
 
-    public function uploadImage(int $id, string $image = "") {
+    public function uploadImage(int $id, string $thumbnail, string $image = "") {
 
+        // If $image is empty check $_FILES
         if($image === "") {
-            $image = $_FILES["file"];
+
+            reset($_FILES);
+            $first_key = key($_FILES);
+
+            $file = $_FILES[$first_key];
+
+            // If no image was uploaded then return 0
+            if($file["error"] === 4) {
+                return 0;
+            }
+
+            // Get binary image data
+            $image = file_get_contents($file['tmp_name']);
         }
 
-        $image = "data:image/png;base64," . base64_encode(file_get_contents($image['tmp_name']));
-        
-        $this->database->query("INSERT INTO product_images (products_id, image) VALUES(:id, :image)", ["id" => $id, "image" => $image])->affectedRows();
+        // If $image is larger than 20 mib, then return 1
+        if(strlen($image) > 20971520) {
+            return 1;
+        }
 
+        // Valid image types
+        $validImageTypes = ["image/jpeg" => "\xFF\xD8\xFF", "image/gif" => "GIF", "image/png" => "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a"];
+
+        $currentType = false;
+        // Loop through each valid type and check binary data if image is valid
+        foreach($validImageTypes as $name => $query) {
+
+            // Set $currentType to the $name of the valid type, if the image is the valid type
+            if(substr($image, 0, strlen($query)) === $query) {
+                $currentType = $name;
+                break;
+            }
+        }
+
+        // If image is not a valid type, return 2
+        if($currentType === false) {
+            return 2;
+        }
+
+        // base64 encode $image
+        $image = base64_encode($image);
+
+        // Set image as thumbnail?
+        $thumbnail = ($thumbnail === "true") ? 1 : 0;
+
+        // Return true/false if it was able to be inserted
+        return ($this->database->query("INSERT INTO product_images (products_id, image, type, thumbnail) VALUES(:id, :image, :image_type, :thumbnail)", ["id" => $id, "image" => $image, "image_type" => $currentType, "thumbnail" => $thumbnail])->affectedRows() > 0);
+    }
+
+    /**
+     * deleteImages() is used to delete images from the database. 
+     * $imagesToDelete is an array of image IDs that will be deleted.
+     * @param array $imagesToDelete
+     * @return bool
+     */
+    public function deleteImages(array $imagesToDelete) : bool {
+
+        // Get image ID count
+        $imageCount = sizeof($imagesToDelete);
+
+        // Initialize query count
+        $queryCount = 0;
+
+        // Delete each image from the database
+        foreach($imagesToDelete as $imageID) {
+            $this->database->query("DELETE FROM product_images WHERE id = :id", ["id" => $imageID])->affectedRows();
+        }
+
+        // Return the result
+        return ($imageCount === $queryCount);
     }
 
     /**

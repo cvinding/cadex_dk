@@ -25,14 +25,6 @@ class ProductView extends \VIEW\BASE\View {
     }
 
     /**
-     * index() is just a test ;)
-     */
-    public function index() : void {
-        http_response_code(200);
-        exit(json_encode(["result" => "The index of the Product endpoint", "status" => true]));
-    }
-
-    /**
      * get() is used for outputting a list of products this endpoint has to offer
      * @param int $id = -1
      * @return void
@@ -46,16 +38,18 @@ class ProductView extends \VIEW\BASE\View {
             $data = $this->productModel->getProduct($id);
         }
 
-        echo "<img src='{$data[0]["image"]}'>";
-die;
-        if(!empty($data)) {
-            http_response_code(200);
-        } else {
-            http_response_code(404);
-        }
+        $httpCode = 200;
+        $status = true;
+
+        if(empty($data)) {
+            $httpCode = 404;
+            $status = false;
+        } 
+
+        http_response_code($httpCode);
 
         // Output the JSON data
-        exit(json_encode(["result" => $data, "status" => true]));
+        exit(json_encode(["result" => $data, "status" => $status]));
     }
 
 }

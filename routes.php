@@ -7,37 +7,42 @@
  * You can use regex to define parameters in a path
  */
 
-$router->get("/product", "ProductView@index");
+/**
+ * Auth endpoint routes
+ */
+
+$router->post("/auth/authenticate", "Auth@authenticate");
+$router->post("/auth/validate", "Auth@validate");
+
+/**
+ * Company endpoint routes
+ */
+
+
+ 
+/**
+ * News endpoint routes
+ */
+
+/*$router->get("/news/get", "NewsView@get");
+$router->get("/news/get/(\d+)", "NewsView@get");
+
+$router->post("/news/create", "News@create");
+
+$router->put("/news/update/(\d+)", "News@update");
+
+$router->delete("/news/delete/(\d+)", "News@delete");*/
+
+/**
+ * Product endpoint routes
+ */
 
 $router->get("/product/get", "ProductView@get");
-
 $router->get("/product/get/(\d+)", "ProductView@get");
 
 $router->post("/product/create", "Product@create");
+$router->post("/product/uploadImage/(\d+)/(true|false)", "Product@uploadImage");
 
 $router->put("/product/update/(\d+)", "Product@update");
 
 $router->delete("/product/delete/(\d+)", "Product@delete");
-
-$router->post("/product/uploadImage/(\d+)", "Product@uploadImage");
-
-//$router->put("/product/uploadImages/(\d+)", "Product@uploadImages");
-
-
-/*$router->get("/product/get", function(Request $request) {
-    return (new \VIEW\ProductView($request))->get();
-});*/
-
-/*$router->get("/product/get/(\d+)", function(Request $request) {
-    return (new \VIEW\ProductView($request))->get($request->getURIArgs()[0]);
-});*/
-
-/*$router->post("/product/create", function(Request $request) {
-
-    $action = $request->getAction();
-    
-    call_user_func_array([new \CONTROLLER\ProductController(), $action], $request->getBody());
-
-    call_user_func_array([new \VIEW\ProductView($request), $action],[]);
-   
-});*/

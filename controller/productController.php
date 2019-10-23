@@ -42,17 +42,36 @@ class ProductController extends \CONTROLLER\BASE\Controller {
         }
     }
 
-    public function uploadImage(int $id, string $image = "") {
-        var_dump("PRODUCT ID " . $id);
+    /**
+     * uploadImage() is used to upload an image and return a message for the view to render
+     * @param int $id
+     * @param string $thumbnail
+     * @param string $image = ""
+     * @return void
+     */
+    public function uploadImage(int $id, string $thumbnail, string $image = "") {
 
-        //var_dump($image);
-        $this->model->uploadImage($id, $image);
+        // Upload image
+        $status = $this->model->uploadImage($id, $thumbnail, $image);
 
-        //$db = new \DATABASE\MYSQLI\Database();
-
-       // $db->query("INSERT INTO product_images (products_id, image) VALUES(:id, :image)", ["id" => $id, "image" => $image])->affectedRows();
-
-
+        // Send the appropriate message
+        switch ($status) {
+            case $status === 0:
+                \HELPER\MessageHandler::attachMessage("Missing image upload.", 400);
+                break;
+            case $status === 1:
+                \HELPER\MessageHandler::attachMessage("Image size is too large. Image size cannot exceed 20mib.", 400);
+                break;
+            case $status === 2:
+                \HELPER\MessageHandler::attachMessage("Invalid image type. Endpoint only supports JPEG, PNG and GIF uploads.", 400);
+                break;
+            case $status === true:
+                \HELPER\MessageHandler::attachMessage("You have successfully uploaded a new image.", 201);
+                break;
+            default:
+                \HELPER\MessageHandler::attachMessage("An error occurred while trying to upload a new image.", 500);
+                break;
+        }
     }
 
     /**
@@ -67,7 +86,7 @@ class ProductController extends \CONTROLLER\BASE\Controller {
     public function update(int $id, string $name, string $description, float $price, array $imagesToDelete = []) : void {
 
         // Try and update the product
-        $result = $this->model->updateProduct($id, $name, $description, $price, $imagesToDelete);
+        $result = $this->model->updateProduct($id, $name, $description, $price);
 
         if(!empty($imagesToDelete)) {
             $this->model->deleteImages($imagesToDelete);

@@ -7,8 +7,8 @@ ini_set('display_startup_errors', "On");
 error_reporting(E_ALL);
 
 // Output will always be JSON
-//header('Content-Type: application/json');
-header("Content-Type: image/png");
+header('Content-Type: application/json');
+
 // Define APP_ROOT
 $DOCUMENT_ROOT = explode("/", $_SERVER["DOCUMENT_ROOT"]);
 array_pop($DOCUMENT_ROOT);

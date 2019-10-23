@@ -34,9 +34,22 @@ class View {
             "DELETE" => [200 => true, 404 => false]
         ];
 
+        $defaultStatusTranslations = [
+            400 => false
+        ];
+
         $statusTranslation = $statusTranslations[$this->request->requestMethod];
 
-        return json_encode(["result" => $message, "status" => $statusTranslation[$httpCode]]);
+        if(!isset($statusTranslation[$httpCode])) {
+            
+            $status = $defaultStatusTranslations[$httpCode];
+
+        } else {
+            
+            $status = $statusTranslation[$httpCode];
+        }
+
+        return json_encode(["result" => $message, "status" => $status]);
     }
 
 }
