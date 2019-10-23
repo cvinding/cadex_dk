@@ -9,6 +9,7 @@ class Autoloader {
 
     /**
      * register() is the detector of which class needs to be required
+     * @return void
      */
     public static function register() {
         spl_autoload_register(function ($class) {
