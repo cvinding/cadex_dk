@@ -18,7 +18,6 @@ $router->post("/auth/validate", "Auth@validate");
  * Company endpoint routes
  */
 
-
  
 /**
  * News endpoint routes
@@ -41,9 +40,9 @@ $router->get("/product/getAll", "ProductView@getAll");
 $router->get("/product/getAll/img/(\d+)", "ProductView@getAll");
 $router->get("/product/get/(\d+)", "ProductView@get");
 
-$router->post("/product/create", "Product@create");
-$router->post("/product/uploadImage/(\d+)/(true|false)", "Product@uploadImage");
+$router->post("/product/create", "Product@create", true);
+$router->post("/product/uploadImage/(\d+)/(true|false)", "Product@uploadImage", true);
 
-$router->put("/product/update/(\d+)", "Product@update");
+$router->put("/product/update/(\d+)", "Product@update", true);
 
-$router->delete("/product/delete/(\d+)", "Product@delete");
+$router->delete("/product/delete/(\d+)", "Product@delete", true);

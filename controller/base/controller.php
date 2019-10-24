@@ -7,4 +7,12 @@ namespace CONTROLLER\BASE;
  * @author Christian Vinding Rasmussen
  * Controller is the Base Class of all controllers.
  */
-class Controller {}
+class Controller {
+
+    protected $request;
+
+    public function __construct(\Request $request) {
+        $this->request = $request;
+    }
+
+}

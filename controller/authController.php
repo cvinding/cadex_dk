@@ -18,7 +18,8 @@ class AuthController extends \CONTROLLER\BASE\Controller {
     /**
      * __construct() creates a new instance of the AuthModel
      */
-    public function __construct() {    
+    public function __construct(\Request $request) {
+        parent::__construct($request);    
         $this->authModel = new \MODEL\AuthModel();
     }
 
@@ -38,10 +39,16 @@ class AuthController extends \CONTROLLER\BASE\Controller {
             
             $token = $this->authModel->createToken();
 
+            // Log this action
+            \HELPER\Logger::log($username, $this->request->remoteAddr, 5, 1);
+
             \HELPER\MessageHandler::attachMessage($token, 201);
 
         // Throw error message if not
         } else {
+
+            // Log this action
+            \HELPER\Logger::log($username, $this->request->remoteAddr, 5, 2, false);
 
             \HELPER\MessageHandler::attachMessage("Unable to authenticate user.", 401);
         }

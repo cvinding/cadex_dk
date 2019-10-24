@@ -18,6 +18,12 @@ class AuthModel extends \MODEL\BASE\Model {
     private $secret;
 
     /**
+     * An instance of the Database class
+     * @var \DATABASE\MYSQLI\Database $database
+     */
+    private $database;
+
+    /**
      * The seconds before the token is usable
      * @var int $notBefore
      */
@@ -40,7 +46,7 @@ class AuthModel extends \MODEL\BASE\Model {
     private $securityGroups = [];
 
     /**
-     * __construct() is used for loading the JWT secret
+     * __construct() is used for loading the JWT secret and initializing the Database class
      */
     public function __construct() {
         try {
@@ -50,6 +56,8 @@ class AuthModel extends \MODEL\BASE\Model {
         } catch(\Exception $exception) {
             exit($exception);
         }
+
+        $this->database = new \DATABASE\MYSQLI\Database();
     }
 
     /**
@@ -65,7 +73,7 @@ class AuthModel extends \MODEL\BASE\Model {
 
         //TODO L D A P
 
-        return true;
+        return in_array($username, ["chvr","kemv","tola"]);
     }
 
     /**
@@ -123,6 +131,26 @@ class AuthModel extends \MODEL\BASE\Model {
 
         // Return the specified claim
         return $payload[$claim];
+    }
+
+    public function registerUser(string $username, bool $register) : int {
+
+        $user = $this->database->query("SELECT id FROM users WHERE username = :username", ["username" => $username])->fetchAssoc();
+
+        if(empty($user) && $register) {
+
+            $id = $this->database->query("INSERT INTO users (username) VALUES (:username)",["username" => $username])->getLastAutoID();
+
+        } else if(!empty($user)) {
+
+            $id = $user[0]["id"];
+        
+        } else {
+
+            $id = 0;
+        }
+
+        return $id;
     }
 
     /**

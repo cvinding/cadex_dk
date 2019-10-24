@@ -24,6 +24,26 @@ class Request {
         //Create and set $_SERVER in Request class 
         $this->_SERVER();
 
+        $this->validRemoteAddr = (filter_var($this->remoteAddr, FILTER_VALIDATE_IP) !== false);
+
+        if(isset($this->httpAuthorization)) {
+            // Set the scheme used
+            $scheme = "Bearer ";
+
+            // Check if scheme is part of authorization header
+            if(substr($this->httpAuthorization, 0, strlen($scheme)) !== $scheme) {
+                http_response_code(400);
+                exit(json_encode(["result" => "Authorization header not in compliance with 'Bearer <token>' scheme!", "status" => false]));
+            }
+
+            // Get the JWT token
+            $this->token = substr($this->httpAuthorization, strlen($scheme));
+        
+        } else {
+
+            $this->token = false;
+        }
+
         // Explode $fullPath into array
         $uri = explode("/", $this->requestUri);
 

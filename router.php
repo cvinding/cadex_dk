@@ -25,9 +25,16 @@ class Router {
             throw new Exception("Request method '".strtoupper($method)."' is not supported!");
         }
 
+        // If there is no route or handler throw exception
+        if(!isset($parameters[0]) || !isset($parameters[1])) {
+            throw new Exception("Unable to add route insufficient parameter count!");
+        }
+
         // Set $route & $handler
         $route = $parameters[0];
         $handler = $parameters[1];
+
+        $token = (isset($parameters[2])) ? $parameters[2] : false;
 
         // Explode $route
         $explodedRoute = explode("/", $route);
@@ -48,13 +55,21 @@ class Router {
         $regex = "^".implode("\/", $explodedRegex)."$";
 
         // Set route into $method array
-        $this->{strtolower($method)}[$class][$action][$regex] = $handler;
+        $this->{strtolower($method)}[$class][$action][$regex] = ["HANDLER" => $handler, "TOKEN" => $token];
+
+        // ["HANDLER" => $handler, "TOKEN" => false];
+        
+        // ["HANDLER" => $handler, "TOKEN" => true];
+
+        // ["HANDLER" => $handler, "TOKEN" => ["Web-SG", "IT-SG"]];
+
+
     }
 
     /**
      * match() is used to check if a route exists and then return string or callable on success or false on failure
      * @param Request $request
-     * @return string|callable|bool
+     * @return array|bool
      */
     public function match(Request $request) {
 
@@ -75,11 +90,11 @@ class Router {
         $routes = $availableRoutes[$request->class][$request->action];
 
         // Loop through each route and check with regex if it is our route
-        foreach($routes as $regex => $handler){
+        foreach($routes as $regex => $routeArray){
             
             // Return handler if regex matches request URI
             if(preg_match("/".$regex."/", $request->requestUri) === 1) {
-                return $handler;
+                return $routeArray;
             }
         } 
 

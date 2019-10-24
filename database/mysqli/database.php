@@ -216,6 +216,18 @@ class Database {
     }
 
     /**
+     * getLastAutoID() is used for returning the last inserted auto generated ID
+     * @return int 
+     */
+    public function getLastAutoID()  {
+        // Reset query
+        $this->query->close();
+        $this->query = null;
+
+        return $this->connection->insert_id;
+    }
+
+    /**
      * __destruct() is used for closing the connection when done with the class.
      */
     public function __destruct(){

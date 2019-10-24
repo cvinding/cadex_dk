@@ -71,10 +71,10 @@ class Database {
     }
 
     /**
-     * fetchArray() is a method for returning all selected rows as an associate array
+     * fetchAssoc() is a method for returning all selected rows as an associate array
      * @return array
      */
-    public function fetchArray() : array {
+    public function fetchAssoc() : array {
         // Fetch the data
         $data = $this->query->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -86,10 +86,10 @@ class Database {
     }
 
     /**
-     * fetchNumericArray() is a method for returning all selected rows as a numeric array
+     * fetchArray() is a method for returning all selected rows as a numeric array
      * @return array
      */
-    public function fetchNumericArray() : array {
+    public function fetchArray() : array {
         // Fetch the data
         $data = $this->query->fetchAll(\PDO::FETCH_NUM);
 
@@ -106,6 +106,13 @@ class Database {
      */
     public function affectedRows() : int {
         return $this->query->rowCount();
+    }
+
+    /**
+     * getLastAutoID() is a method for returning the last inserted auto generated ID
+     */
+    public function getLastAutoID() : int {
+        return (int) $this->connection->lastInsertId();
     }
 
     /**

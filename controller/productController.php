@@ -18,7 +18,8 @@ class ProductController extends \CONTROLLER\BASE\Controller {
     /**
      * __construct() is used for setting the $model this controller will be using
      */
-    public function __construct() {
+    public function __construct(\Request $request) {
+        parent::__construct($request);
         $this->productModel = new \MODEL\ProductModel();
     }
 
@@ -34,10 +35,16 @@ class ProductController extends \CONTROLLER\BASE\Controller {
         // Try and create a new product
         $result = $this->productModel->createProduct($name, $description, $price);
 
+        $username = (new \MODEL\AuthModel())->getTokenClaim($this->request->token, "uid");
+
         // Attach message based on outcome
         if($result) {
+            \HELPER\Logger::log($username, $this->request->remoteAddr, 1, 3);
+
             \HELPER\MessageHandler::attachMessage("You have successfully created a new product.", 201);
         } else {
+            \HELPER\Logger::log($username, $this->request->remoteAddr, 1, 4);
+
             \HELPER\MessageHandler::attachMessage("An error occurred while trying to create a new product.", 500);
         }
     }

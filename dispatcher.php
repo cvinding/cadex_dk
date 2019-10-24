@@ -29,21 +29,51 @@ class Dispatcher {
     public function dispatch(Request $request) : void {
 
         // Get the request handler
-        $handler = $this->router->match($request);
+        $routeArray = $this->router->match($request);
 
         // If $handler is false give a standard not found 404 message
-        if($handler === false) {
+        if($routeArray === false) {
             http_response_code(404);
             exit(json_encode(["result" => "Resource not found!", "status" => false]));
         }
 
+        if($routeArray["TOKEN"] !== false) {
+
+            $token = $request->token;
+
+            if($token === false) {
+                http_response_code(403);
+                exit(json_encode(["result" => "Missing API token!", "status" => false]));
+            }
+
+            $authModel = new \MODEL\AuthModel();
+
+            if(!$authModel->validateToken($token)) {
+                http_response_code(403);
+                exit(json_encode(["result" => "Access to this resource is forbidden!", "status" => false]));
+            }
+
+            if(is_array($routeArray["TOKEN"])) {
+                $tokenSGs = $authModel->getTokenClaim($token,"sgr");
+
+                foreach($routeArray["TOKEN"] as $securityGroup) {
+        
+                    if(!in_array($securityGroup, $tokenSGs)) {
+                        http_response_code(403);
+                        exit(json_encode(["result" => "Access to this resource is restricted!", "status" => false]));
+                    }
+                }
+            }
+
+        }
+
         // If $handler is callable then call and exit the code
-        if(is_callable($handler)) {
-            exit($handler($request));
+        if(is_callable($routeArray["HANDLER"])) {
+            exit($routeArray["HANDLER"]($request));
         }
 
         // Split the class name & action name
-        $explodedHandler = explode("@", $handler);
+        $explodedHandler = explode("@", $routeArray["HANDLER"]);
 
         $classToCall = $explodedHandler[0];
         $actionToCall = $explodedHandler[1];
@@ -59,7 +89,7 @@ class Dispatcher {
 
             // Check if $reflection instance has the $actionToCall method and call it if so
             if($reflection->hasMethod($actionToCall)) {
-                call_user_func_array([new $classes["CONTROLLER"](), $actionToCall], array_merge($request->uriArgs, $request->getBody()));
+                call_user_func_array([new $classes["CONTROLLER"]($request), $actionToCall], array_merge($request->uriArgs, $request->getBody()));
             }
         }
 
