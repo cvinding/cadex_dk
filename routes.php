@@ -37,7 +37,8 @@ $router->delete("/news/delete/(\d+)", "News@delete");*/
  * Product endpoint routes
  */
 
-$router->get("/product/get", "ProductView@get");
+$router->get("/product/getAll", "ProductView@getAll");
+$router->get("/product/getAll/img/(\d+)", "ProductView@getAll");
 $router->get("/product/get/(\d+)", "ProductView@get");
 
 $router->post("/product/create", "Product@create");

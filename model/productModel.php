@@ -26,8 +26,17 @@ class ProductModel extends \MODEL\BASE\Model {
      * getProducts() selects all products from the database, can return an empty array if no entries has been created
      * @return array
      */
-    public function getProducts() : array {
-        return $this->database->query("SELECT p.id, p.name, p.description, p.price, pi.image, pi.type FROM products p LEFT JOIN product_images pi ON p.id = pi.products_id AND pi.thumbnail = 1")->fetchAssoc();
+    public function getProducts(int $imageCount) : array {
+
+        $products = $this->database->query("SELECT id, name, description, price FROM products")->fetchAssoc();
+
+        foreach($products as $index => $product) {
+            $images = $this->database->query("SELECT image, type, thumbnail FROM product_images WHERE products_id = :p_id ORDER BY thumbnail DESC LIMIT :limit", ["p_id" => $product["id"], "limit" => $imageCount])->fetchAssoc();
+
+            $products[$index]["images"] = $images;
+        }
+
+        return $products; 
     }
 
     /**

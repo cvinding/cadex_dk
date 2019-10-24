@@ -26,17 +26,12 @@ class ProductView extends \VIEW\BASE\View {
 
     /**
      * get() is used for outputting a list of products this endpoint has to offer
-     * @param int $id = -1
+     * @param int $id
      * @return void
      */
-    public function get(int $id = -1) : void {
+    public function get(int $id) : void {
 
-        // If $id is -1 then show all products, else only show one product
-        if($id === -1) {
-            $data = $this->productModel->getProducts();
-        } else {
-            $data = $this->productModel->getProduct($id);
-        }
+        $data = $this->productModel->getProduct($id);
 
         $httpCode = 200;
         $status = true;
@@ -51,5 +46,30 @@ class ProductView extends \VIEW\BASE\View {
         // Output the JSON data
         exit(json_encode(["result" => $data, "status" => $status]));
     }
+
+    /**
+     * getAll() is used to return all products + specify the amount of images the API should output
+     * @param string $img = ""
+     * @param int $imgAmount = 1
+     * @return void 
+     */
+    public function getAll(string $img = "", int $imgAmount = 1) : void {
+
+        $data = $this->productModel->getProducts($imgAmount);
+
+        $httpCode = 200;
+        $status = true;
+
+        if(empty($data)) {
+            $httpCode = 404;
+            $status = false;
+        } 
+
+        http_response_code($httpCode);
+
+        // Output the JSON data
+        exit(json_encode(["result" => $data, "status" => $status]));
+    }
+
 
 }
