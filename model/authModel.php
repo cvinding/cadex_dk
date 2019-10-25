@@ -69,7 +69,7 @@ class AuthModel extends \MODEL\BASE\Model {
     public function authenticateUser(string $username, string $password) : bool {
 
         $this->username = $username;
-        $this->securityGroups[] = "Web-SG";
+        $this->securityGroups[] = "IT_SG";
 
         //TODO L D A P
 
@@ -126,31 +126,11 @@ class AuthModel extends \MODEL\BASE\Model {
             $payload = \ReallySimpleJWT\Token::getPayload($token, $this->secret);
 
         } catch (\Exception $exception) {
-            exit($exception);
+            return false;
         }
 
         // Return the specified claim
         return $payload[$claim];
-    }
-
-    public function registerUser(string $username, bool $register) : int {
-
-        $user = $this->database->query("SELECT id FROM users WHERE username = :username", ["username" => $username])->fetchAssoc();
-
-        if(empty($user) && $register) {
-
-            $id = $this->database->query("INSERT INTO users (username) VALUES (:username)",["username" => $username])->getLastAutoID();
-
-        } else if(!empty($user)) {
-
-            $id = $user[0]["id"];
-        
-        } else {
-
-            $id = 0;
-        }
-
-        return $id;
     }
 
     /**
@@ -165,7 +145,7 @@ class AuthModel extends \MODEL\BASE\Model {
             $isValid = \ReallySimpleJWT\Token::validate($token, $this->secret);
 
         } catch (\Exception $exception) {
-            exit($exception);
+            return false;
         }
 
         // Return result of validation

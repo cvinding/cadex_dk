@@ -67,9 +67,15 @@ class AuthController extends \CONTROLLER\BASE\Controller {
         // Output message based on outcome
         if($isValid) {
 
+            // Log this action
+            \HELPER\Logger::log($this->username, $this->request->remoteAddr, 5, 3);
+
             \HELPER\MessageHandler::attachMessage("Valid token.", 200);
         
         } else {
+
+            // Log action
+            \HELPER\Logger::log("UNKNOWN_USER", $this->request->remoteAddr, 5, 4, false);
 
             \HELPER\MessageHandler::attachMessage("Invalid token.", 401);
         }

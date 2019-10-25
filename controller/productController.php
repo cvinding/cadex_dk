@@ -35,15 +35,13 @@ class ProductController extends \CONTROLLER\BASE\Controller {
         // Try and create a new product
         $result = $this->productModel->createProduct($name, $description, $price);
 
-        $username = (new \MODEL\AuthModel())->getTokenClaim($this->request->token, "uid");
-
         // Attach message based on outcome
         if($result) {
-            \HELPER\Logger::log($username, $this->request->remoteAddr, 1, 3);
+            \HELPER\Logger::log($this->username, $this->request->remoteAddr, 1, 5);
 
             \HELPER\MessageHandler::attachMessage("You have successfully created a new product.", 201);
         } else {
-            \HELPER\Logger::log($username, $this->request->remoteAddr, 1, 4);
+            \HELPER\Logger::log($this->username, $this->request->remoteAddr, 1, 6);
 
             \HELPER\MessageHandler::attachMessage("An error occurred while trying to create a new product.", 500);
         }
@@ -64,18 +62,33 @@ class ProductController extends \CONTROLLER\BASE\Controller {
         // Send the appropriate message
         switch ($status) {
             case $status === 0:
+
+                \HELPER\Logger::log($this->username, $this->request->remoteAddr, 1, 9);
+
                 \HELPER\MessageHandler::attachMessage("Missing image upload.", 400);
                 break;
             case $status === 1:
+
+                \HELPER\Logger::log($this->username, $this->request->remoteAddr, 1, 10);
+
                 \HELPER\MessageHandler::attachMessage("Image size is too large. Image size cannot exceed 20mib.", 400);
                 break;
             case $status === 2:
+
+                \HELPER\Logger::log($this->username, $this->request->remoteAddr, 1, 11);
+
                 \HELPER\MessageHandler::attachMessage("Invalid image type. Endpoint only supports JPEG, PNG and GIF uploads.", 400);
                 break;
             case $status === true:
+
+                \HELPER\Logger::log($this->username, $this->request->remoteAddr, 1, 7);
+
                 \HELPER\MessageHandler::attachMessage("You have successfully uploaded a new image.", 201);
                 break;
             default:
+                
+                \HELPER\Logger::log($this->username, $this->request->remoteAddr, 1, 8);
+
                 \HELPER\MessageHandler::attachMessage("An error occurred while trying to upload a new image.", 500);
                 break;
         }
@@ -102,8 +115,12 @@ class ProductController extends \CONTROLLER\BASE\Controller {
 
         // Attach message based on outcome
         if($result) {
+            \HELPER\Logger::log($this->username, $this->request->remoteAddr, 3, 12);
+
             \HELPER\MessageHandler::attachMessage("You have successfully updated a product.", 200);
         } else {
+            \HELPER\Logger::log($this->username, $this->request->remoteAddr, 3, 13);
+
             \HELPER\MessageHandler::attachMessage("Unable to find product, product could not be updated.", 404);
         }
     }
@@ -118,8 +135,12 @@ class ProductController extends \CONTROLLER\BASE\Controller {
 
         // Attach message based on outcome
         if($result) {
+            \HELPER\Logger::log($this->username, $this->request->remoteAddr, 4, 14);
+
             \HELPER\MessageHandler::attachMessage("You have successfully deleted a product.", 200);
         } else {
+            \HELPER\Logger::log($this->username, $this->request->remoteAddr, 4, 15);
+
             \HELPER\MessageHandler::attachMessage("Unable to find product, product could not be deleted.", 404);
         }
 

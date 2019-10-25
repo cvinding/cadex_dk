@@ -5,7 +5,7 @@ namespace VIEW\BASE;
  * Class View
  * @package VIEW\BASE
  * @author Christian Vinding Rasmussen
- * TODO description
+ * View is the Base class of all views.
  */
 class View {
 
@@ -14,6 +14,12 @@ class View {
      * @var \Request $request
      */
     protected $request;
+
+    /**
+     * The username from the token claims
+     * @var string $username
+     */
+    protected $username = null;
 
     /**
      * An array of http codes and what to output in the "status" response field
@@ -36,6 +42,11 @@ class View {
      */
     protected function __construct(\Request $request) {
         $this->request = $request;
+        
+        // Get and set username from token, if token is not false
+        if($this->request->token !== false) {
+            $this->username = (new \MODEL\AuthModel())->getTokenClaim($this->request->token, "uid");
+        }
     }
 
     /**
