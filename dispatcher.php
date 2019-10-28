@@ -42,6 +42,10 @@ class Dispatcher {
             $token = $request->token;
 
             if($token === false) {
+
+                // Log the action
+                \HELPER\Logger::log("UNKNOWN_USER", $request->remoteAddr, 5, 22, false);
+
                 http_response_code(403);
                 exit(json_encode(["result" => "Missing API token!", "status" => false]));
             }
@@ -49,16 +53,25 @@ class Dispatcher {
             $authModel = new \MODEL\AuthModel();
 
             if(!$authModel->validateToken($token)) {
+
+                // Log the action
+                \HELPER\Logger::log("UNKNOWN_USER", $request->remoteAddr, 5, 23, false);
+
                 http_response_code(403);
                 exit(json_encode(["result" => "Access to this resource is forbidden!", "status" => false]));
             }
 
             if(is_array($routeArray["TOKEN"])) {
                 $tokenSGs = $authModel->getTokenClaim($token,"sgr");
+                $tokenUser = $authModel->getTokenClaim($token, "uid");
 
                 foreach($routeArray["TOKEN"] as $securityGroup) {
         
                     if(!in_array($securityGroup, $tokenSGs)) {
+
+                        // Log the action
+                        \HELPER\Logger::log($tokenUser, $request->remoteAddr, 5, 24, false);
+
                         http_response_code(403);
                         exit(json_encode(["result" => "Access to this resource is restricted!", "status" => false]));
                     }

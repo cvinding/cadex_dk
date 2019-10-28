@@ -18,6 +18,20 @@ $router->post("/auth/validate", "Auth@validate");
  * Company endpoint routes
  */
 
+$router->get("/company/getLogs", "CompanyView@getLogs");
+$router->get("/company/getLogs/(\d+)", "CompanyView@getLogs");
+
+$router->get("/company/getLogs/(\d{4})-(\d{2})-(\d{2})", "CompanyView@getLogsByDate");
+$router->get("/company/getLogs/(\d{4})-(\d{2})-(\d{2})/(\d+)", "CompanyView@getLogsByDate");
+
+$router->get("/company/getLogs/(\d{1,3})-(\d{1,3})-(\d{1,3})-(\d{1,3})", "CompanyView@getLogsByIP");
+$router->get("/company/getLogs/(\d{1,3})-(\d{1,3})-(\d{1,3})-(\d{1,3})/(\d+)", "CompanyView@getLogsByIP");
+
+$router->get("/company/getLogs/(create|read|update|delete|authenticate)", "CompanyView@getLogsByAction");
+$router->get("/company/getLogs/(create|read|update|delete|authenticate)/(\d+)", "CompanyView@getLogsByAction");
+
+$router->get("/company/getLogs/(\w+)", "CompanyView@getLogsByUserID");
+$router->get("/company/getLogs/(\w+)/(\d+)", "CompanyView@getLogsByUserID");
  
 /**
  * News endpoint routes
