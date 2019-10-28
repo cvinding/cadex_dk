@@ -3,17 +3,8 @@ namespace MODEL;
 
 class NewsModel extends \MODEL\BASE\Model {
 
-    /**
-     * An instance of the Database class
-     * @var \DATABASE\MYSQLI\Database $database
-     */
-    private $database;
-
-    /**
-     * __construct() is used for creating a new instance of the Database class
-     */
     public function __construct() {
-        $this->database = new \DATABASE\MYSQLI\Database();
+        parent::__construct();
     }
 
     public function getNewsPosts() : array {

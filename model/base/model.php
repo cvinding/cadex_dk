@@ -3,6 +3,10 @@ namespace MODEL\BASE;
 
 class Model {
 
+    /**
+     * An instance of the Database class
+     * @var \DATABASE\MYSQLI\Database $database
+     */
     protected $database;
 
     private $maxEntries = 25;

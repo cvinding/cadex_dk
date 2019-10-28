@@ -18,12 +18,6 @@ class AuthModel extends \MODEL\BASE\Model {
     private $secret;
 
     /**
-     * An instance of the Database class
-     * @var \DATABASE\MYSQLI\Database $database
-     */
-    private $database;
-
-    /**
      * The seconds before the token is usable
      * @var int $notBefore
      */
@@ -49,6 +43,7 @@ class AuthModel extends \MODEL\BASE\Model {
      * __construct() is used for loading the JWT secret and initializing the Database class
      */
     public function __construct() {
+        parent::__construct();
         try {
 
             $this->secret = \HELPER\ConfigLoader::load("config/secret.php", ["SECRET"])["SECRET"];

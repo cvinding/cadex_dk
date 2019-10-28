@@ -8,7 +8,7 @@ class CompanyModel extends \MODEL\BASE\Model {
     }
 
     public function getAbout() : array {
-        return $this->database->query("SELECT * FROM company_information")->fetchAssoc();
+        return $this->database->query("SELECT ci.id, ci.title, ci.content, ci.email, ci.phone_number, u.username author FROM company_information ci INNER JOIN users u ON ci.author = u.id")->fetchAssoc();
     }
 
 }

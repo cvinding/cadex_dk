@@ -18,6 +18,8 @@ $router->post("/auth/validate", "Auth@validate");
  * Company endpoint routes
  */
 
+$router->get("/company/getAbout", "CompanyView@getAbout");
+
 $router->get("/company/getLogs", "CompanyView@getLogs");
 $router->get("/company/getLogs/(\d+)", "CompanyView@getLogs");
 

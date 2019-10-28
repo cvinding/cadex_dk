@@ -13,7 +13,7 @@ class CompanyView extends \VIEW\BASE\View {
     }
 
     public function getAbout() : void {
-        exit(json_encode(["result" => $this->companyModel->]))
+        exit(json_encode(["result" => $this->companyModel->getAbout(), "status" => true]));
     }
 
     public function getLogs(int $page = 1) {
