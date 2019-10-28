@@ -7,6 +7,11 @@
  * You can use regex to define parameters in a path
  */
 
+$router->get("/", function() {
+    http_response_code(200);
+    exit(json_encode(["result" => "The cadex.dk API", "status" => true]));
+});
+
 /**
  * Auth endpoint routes
  */
@@ -18,7 +23,9 @@ $router->post("/auth/validate", "Auth@validate");
  * Company endpoint routes
  */
 
-$router->get("/company/getAbout", "CompanyView@getAbout");
+$router->get("/company/information", "CompanyView@getAbout");
+
+$router->put("/company/edit", "Company@editAbout");
 
 $router->get("/company/getLogs", "CompanyView@getLogs");
 $router->get("/company/getLogs/(\d+)", "CompanyView@getLogs");
