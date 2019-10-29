@@ -7,71 +7,34 @@
  * You can use regex to define parameters in a path
  */
 
-$router->get("/", function() {
-    http_response_code(200);
-    exit(json_encode(["result" => "The cadex.dk API", "status" => true]));
-});
+$router->get("/", "HomeView@index");
 
-/**
- * Auth endpoint routes
- */
+$router->get("/products", "ProductView@index");
 
-$router->post("/auth/authenticate", "Auth@authenticate");
-$router->post("/auth/validate", "Auth@validate");
+$router->get("/news", function(\Request $request) {
 
-/**
- * Company endpoint routes
- */
+    $html = "<h3>Here is some secret news</h3>";
 
-$router->get("/company/information", "CompanyView@getAbout");
+    $model = new \MODEL\BASE\Model();
 
-$router->put("/company/edit", "Company@editAbout", ["IT_SG"]);
+    var_dump($model->sendGET("/news/getAll"));
 
-$router->get("/company/getLogs", "CompanyView@getLogs", ["IT_SG"]);
-$router->get("/company/getLogs/(\d+)", "CompanyView@getLogs", ["IT_SG"]);
+    exit($html);
 
-$router->get("/company/getLogs/(\d{4})-(\d{2})-(\d{2})", "CompanyView@getLogsByDate", ["IT_SG"]);
-$router->get("/company/getLogs/(\d{4})-(\d{2})-(\d{2})/(\d+)", "CompanyView@getLogsByDate", ["IT_SG"]);
+}, ["LOGIN/STATUS" => true]);
 
-$router->get("/company/getLogs/(\d{1,3})-(\d{1,3})-(\d{1,3})-(\d{1,3})", "CompanyView@getLogsByIP", ["IT_SG"]);
-$router->get("/company/getLogs/(\d{1,3})-(\d{1,3})-(\d{1,3})-(\d{1,3})/(\d+)", "CompanyView@getLogsByIP", ["IT_SG"]);
+$router->get("/login", function(\Request $request) {
 
-$router->get("/company/getLogs/(create|read|update|delete|authenticate)", "CompanyView@getLogsByAction", ["IT_SG"]);
-$router->get("/company/getLogs/(create|read|update|delete|authenticate)/(\d+)", "CompanyView@getLogsByAction", ["IT_SG"]);
+    \SESSION\Session::set("LOGIN/STATUS", true);
 
-$router->get("/company/getLogs/(\w+)", "CompanyView@getLogsByUserID", ["IT_SG"]);
-$router->get("/company/getLogs/(\w+)/(\d+)", "CompanyView@getLogsByUserID", ["IT_SG"]);
- 
-/**
- * News endpoint routes
- */
+    header("location: /");
+    
+}, ["LOGIN/STATUS" => false]);
 
-$router->get("/news/getAll", "NewsView@getAll", true);
-$router->get("/news/getAll/(\d+)", "NewsView@getAll", true);
+$router->get("/logout", function(\Request $request) {
 
-$router->get("/news/get/(\d+)", "NewsView@get", true);
+    session_destroy();
 
-$router->post("/news/create", "News@create", ["IT_SG"]);
+    header("location: /");
 
-$router->put("/news/update/(\d+)", "News@update", ["IT_SG"]);
-
-$router->delete("/news/delete/(\d+)", "News@delete", ["IT_SG"]);
-
-/**
- * Product endpoint routes
- */
-
-$router->get("/product/getAll", "ProductView@getAll");
-$router->get("/product/getAll/(\d+)", "ProductView@getAll");
-
-$router->get("/product/getAll/img/(\d+)", "ProductView@getAllSetImages");
-$router->get("/product/getAll/img/(\d+)/(\d+)", "ProductView@getAllSetImages");
-
-$router->get("/product/get/(\d+)", "ProductView@get");
-
-$router->post("/product/create", "Product@create", ["IT_SG"]);
-$router->post("/product/uploadImage/(\d+)/(true|false)", "Product@uploadImage", ["IT_SG"]);
-
-$router->put("/product/update/(\d+)", "Product@update", ["IT_SG"]);
-
-$router->delete("/product/delete/(\d+)", "Product@delete", ["IT_SG"]);
+}, ["LOGIN/STATUS" => true]);

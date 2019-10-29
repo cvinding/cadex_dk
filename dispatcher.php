@@ -33,51 +33,19 @@ class Dispatcher {
 
         // If $handler is false give a standard not found 404 message
         if($routeArray === false) {
-            http_response_code(404);
-            exit(json_encode(["result" => "Resource not found!", "status" => false]));
+            exit((new \VIEW\BASE\View($request))->render("http-codes/404.php", ["defaultPage" => "/"]));
         }
 
-        if($routeArray["TOKEN"] !== false) {
+        if(!empty($routeArray["SESSION"])) {
 
-            $token = $request->token;
+            // Loop through each session defined in $routeArray
+            foreach($routeArray["SESSION"] as $name => $value) {
 
-            if($token === false) {
-
-                // Log the action
-                \HELPER\Logger::log("UNKNOWN_USER", $request->remoteAddr, 5, 22, false);
-
-                http_response_code(403);
-                exit(json_encode(["result" => "Missing API token!", "status" => false]));
-            }
-
-            $authModel = new \MODEL\AuthModel();
-
-            if(!$authModel->validateToken($token)) {
-
-                // Log the action
-                \HELPER\Logger::log("UNKNOWN_USER", $request->remoteAddr, 5, 23, false);
-
-                http_response_code(403);
-                exit(json_encode(["result" => "Access to this resource is forbidden!", "status" => false]));
-            }
-
-            if(is_array($routeArray["TOKEN"])) {
-                $tokenSGs = $authModel->getTokenClaim($token,"sgr");
-                $tokenUser = $authModel->getTokenClaim($token, "uid");
-
-                foreach($routeArray["TOKEN"] as $securityGroup) {
-        
-                    if(!in_array($securityGroup, $tokenSGs)) {
-
-                        // Log the action
-                        \HELPER\Logger::log($tokenUser, $request->remoteAddr, 5, 24, false);
-
-                        http_response_code(403);
-                        exit(json_encode(["result" => "Access to this resource is restricted!", "status" => false]));
-                    }
+                // If a $_SESSION does not have the same value as the current one in $routeArray, redirect
+                if(\SESSION\Session::get($name) !== $value) {
+                    header("location: /");
                 }
             }
-
         }
 
         // If $handler is callable then call and exit the code
@@ -152,5 +120,50 @@ class Dispatcher {
         // Return the finished array with namespaces
         return $returnable;
     }
+
+
+
+/*if($routeArray["SESSION"] !== false) {
+
+            $token = $request->token;
+
+            if($token === false) {
+
+                // Log the action
+                \HELPER\Logger::log("UNKNOWN_USER", $request->remoteAddr, 5, 22, false);
+
+                http_response_code(403);
+                exit(json_encode(["result" => "Missing API token!", "status" => false]));
+            }
+
+            $authModel = new \MODEL\AuthModel();
+
+            if(!$authModel->validateToken($token)) {
+
+                // Log the action
+                \HELPER\Logger::log("UNKNOWN_USER", $request->remoteAddr, 5, 23, false);
+
+                http_response_code(403);
+                exit(json_encode(["result" => "Access to this resource is forbidden!", "status" => false]));
+            }
+
+            if(is_array($routeArray["TOKEN"])) {
+                $tokenSGs = $authModel->getTokenClaim($token,"sgr");
+                $tokenUser = $authModel->getTokenClaim($token, "uid");
+
+                foreach($routeArray["TOKEN"] as $securityGroup) {
+        
+                    if(!in_array($securityGroup, $tokenSGs)) {
+
+                        // Log the action
+                        \HELPER\Logger::log($tokenUser, $request->remoteAddr, 5, 24, false);
+
+                        http_response_code(403);
+                        exit(json_encode(["result" => "Access to this resource is restricted!", "status" => false]));
+                    }
+                }
+            }
+
+        }*/
 
 }

@@ -19,6 +19,9 @@ require_once APP_ROOT."/autoloader.php";
 
 try {
 
+    // Start the session
+    \SESSION\Session::start();
+
     // Initialize the Request class
     $request = new \Request();
 
