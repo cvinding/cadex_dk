@@ -3,15 +3,16 @@ namespace VIEW;
 
 class HomeView extends \VIEW\BASE\View {
 
-    public $title = "CADEX - Hjem";
+  //  public $title = "CADEX - Hjem";
 
-    public $css = [
+    /*public $css = [
         "/design/css/demons.css",
         "/design/css/demons2.css",
-    ];
+    ];*/
 
     public function __construct(\Request $request) {
         parent::__construct($request);
+        
     }
 
     public function index() {

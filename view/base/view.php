@@ -3,9 +3,10 @@ namespace VIEW\BASE;
 
 class View {
 
-    public $title = "CADEX";
+    private $title = "CADEX";
 
-    public $css = [
+    private $css = [
+        "/design/vendor/bootstrap-4.3.1/css/bootstrap.min.css",
         "/design/css/stylesheet.css"
     ];
 
@@ -65,4 +66,5 @@ class View {
         return $links;
     }
 
+    
 }
