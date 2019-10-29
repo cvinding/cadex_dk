@@ -9,18 +9,36 @@ namespace MODEL;
  */
 class ProductModel extends \MODEL\BASE\Model {
 
+    /**
+     * __construct() call parent::__construct() for setting the Database instance
+     */
     public function __construct() {
-        parent::__construct();
+        parent::__construct(10);
     }
 
     /**
      * getProducts() selects all products from the database, can return an empty array if no entries has been created
+     * @param int $imageCount
+     * @param int $page
      * @return array
      */
-    public function getProducts(int $imageCount) : array {
+    public function getProducts(int $imageCount, int $page) : array {
+        
+        $sql = "SELECT id, name, description, price FROM products LIMIT :limit OFFSET :offset";
 
-        $products = $this->database->query("SELECT id, name, description, price FROM products")->fetchAssoc();
+        $bindable = [
+            "limit" => $this->getLimit($page),
+            "offset" => $this->getOffset($page)
+        ];
 
+        // Get products
+        $products = $this->database->query($sql, $bindable)->fetchAssoc();
+
+        if($imageCount === 0){
+            return $products;
+        }
+
+        // Foreach product get the images
         foreach($products as $index => $product) {
             $images = $this->database->query("SELECT image, type, thumbnail FROM product_images WHERE products_id = :p_id ORDER BY thumbnail DESC LIMIT :limit", ["p_id" => $product["id"], "limit" => $imageCount])->fetchAssoc();
 
@@ -91,6 +109,12 @@ class ProductModel extends \MODEL\BASE\Model {
         return true;
     }
 
+    /**
+     * uploadImage() the method for uploading a image to a specified product
+     * @param int $id
+     * @param string $thumbnail
+     * @param string $image = ""
+     */
     public function uploadImage(int $id, string $thumbnail, string $image = "") {
 
         // If $image is empty check $_FILES

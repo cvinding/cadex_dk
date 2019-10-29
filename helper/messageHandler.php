@@ -5,10 +5,14 @@ namespace HELPER;
  * Class MessageHandler
  * @package HELPER
  * @author Christian Vinding Rasmussen
- * A simple message handler class for outputting a respone in the view
+ * A simple message handler class for outputting a response in the view
  */
 class MessageHandler {
 
+    /**
+     * The array for storing all system messages
+     * @var array $messages
+     */
     private static $messages = [];
 
     /**

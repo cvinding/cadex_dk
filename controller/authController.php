@@ -5,7 +5,7 @@ namespace CONTROLLER;
  * Class AuthController
  * @package CONTROLLER
  * @author Christian Vinding Rasmussen
- * TODO description
+ * The controller for user input on the Auth endpoint.
  */
 class AuthController extends \CONTROLLER\BASE\Controller {
 
@@ -17,6 +17,7 @@ class AuthController extends \CONTROLLER\BASE\Controller {
 
     /**
      * __construct() creates a new instance of the AuthModel
+     * @param \Request $request
      */
     public function __construct(\Request $request) {
         parent::__construct($request);    

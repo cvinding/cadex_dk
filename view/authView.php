@@ -5,7 +5,7 @@ namespace VIEW;
  * Class AuthView
  * @package VIEW
  * @author Christian Vinding Rasmussen
- * TODO description
+ * The AuthView is used for showing the generated API token
  */
 class AuthView extends \VIEW\BASE\View {
 

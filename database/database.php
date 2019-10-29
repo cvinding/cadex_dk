@@ -5,7 +5,7 @@ namespace DATABASE;
  * Class Database
  * @package DATABASE
  * @author Christian Vinding Rasmussen
- * TODO description Database >;)
+ * A PDO implementation of an Database class.
  */
 class Database {
 

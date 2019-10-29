@@ -5,7 +5,7 @@ namespace VIEW;
  * Class NewsView
  * @package VIEW
  * @author Christian Vinding Rasmussen
- * TODO description
+ * The NewsView outputs responses directly or from the controller
  */
 class NewsView extends \VIEW\BASE\View {
 
@@ -25,21 +25,39 @@ class NewsView extends \VIEW\BASE\View {
     }
 
     /**
-     * get() the endpoint for outputting all the news posts or a specific news post
-     * @param int $id = -1
+     * get() the endpoint for outputting a specific news post
+     * @param int $id
      * @return void
      */
-    public function get(int $id = -1) : void {
+    public function get(int $id) : void {
 
-        // If $id === -1 then select all news posts else only the specified
-        if($id === -1) {
-
-            $data = $this->newsModel->getNewsPosts();
+        $data = $this->newsModel->getNewsPost($id);
+        
+        if(empty($data)) {
+            
+            $httpCode = 404;
+            $status = false;
 
         } else {
 
-            $data = $this->newsModel->getNewsPost($id);
+            $httpCode = 200;
+            $status = true;
         }
+
+        http_response_code($httpCode);
+
+        // Output the JSON data
+        exit(json_encode(["result" => $data, "status" => $status]));
+    }
+
+    /**
+     * getAll() is the method for showing all news posts method
+     * @param int $page = 1
+     * @return void
+     */
+    public function getAll(int $page = 1) : void {
+
+        $data = $this->newsModel->getNewsPosts($page);
 
         if(empty($data)) {
             

@@ -17,6 +17,7 @@ class ProductController extends \CONTROLLER\BASE\Controller {
 
     /**
      * __construct() is used for setting the $model this controller will be using
+     * @param \Request $request
      */
     public function __construct(\Request $request) {
         parent::__construct($request);
@@ -54,7 +55,7 @@ class ProductController extends \CONTROLLER\BASE\Controller {
      * @param string $image = ""
      * @return void
      */
-    public function uploadImage(int $id, string $thumbnail, string $image = "") {
+    public function uploadImage(int $id, string $thumbnail, string $image = "") : void {
 
         // Upload image
         $status = $this->productModel->uploadImage($id, $thumbnail, $image);
@@ -127,8 +128,10 @@ class ProductController extends \CONTROLLER\BASE\Controller {
 
     /**
      * delete() is used to call the $model for deleting products
+     * @param int $id
+     * @return void
      */
-    public function delete(int $id) {
+    public function delete(int $id) : void {
 
         // Try and delete the product
         $result = $this->productModel->deleteProduct($id);

@@ -48,22 +48,52 @@ class ProductView extends \VIEW\BASE\View {
     }
 
     /**
-     * getAll() is used to return all products + specify the amount of images the API should output
-     * @param string $img = ""
-     * @param int $imgAmount = 1
+     * getAll() is used to return all products 
+     * @param int $page = 1
      * @return void 
      */
-    public function getAll(string $img = "", int $imgAmount = 1) : void {
+    public function getAll(int $page = 1) : void {
 
-        $data = $this->productModel->getProducts($imgAmount);
-
-        $httpCode = 200;
-        $status = true;
+        $data = $this->productModel->getProducts(1, $page);
 
         if(empty($data)) {
+            
             $httpCode = 404;
             $status = false;
-        } 
+
+        } else {
+
+            $httpCode = 200;
+            $status = true;
+        }
+
+        http_response_code($httpCode);
+
+        // Output the JSON data
+        exit(json_encode(["result" => $data, "status" => $status]));
+    }
+
+    /**
+     * getAllSetImages() is used to return all products + specify the amount of images the API should output
+     * @param string $img = ""
+     * @param int $imgAmount = 1
+     * @param int $page = 1
+     * @return void 
+     */
+    public function getAllSetImages(string $img = "", int $imgAmount = 1, int $page = 1) : void {
+
+        $data = $this->productModel->getProducts($imgAmount, $page);
+
+        if(empty($data)) {
+            
+            $httpCode = 404;
+            $status = false;
+
+        } else {
+
+            $httpCode = 200;
+            $status = true;
+        }
 
         http_response_code($httpCode);
 

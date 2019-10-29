@@ -1,9 +1,9 @@
 <?php
 
 /**
- * class Dispatcher
+ * Class Dispatcher
  * @author Christian Vinding Rasmussen
- * TODO description
+ * The Dispatcher is used to figure out which views and controllers to call.
  */
 class Dispatcher {
 

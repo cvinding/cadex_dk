@@ -1,13 +1,14 @@
 <?php
 namespace MODEL;
 
+// Require the JWT library
 require APP_ROOT . '/vendor/autoload.php';
 
 /**
  * Class AuthModel
  * @package MODEL
  * @author Christian Vinding Rasmussen
- * TODO Description
+ * The model for granting access for users using the API
  */
 class AuthModel extends \MODEL\BASE\Model {
 

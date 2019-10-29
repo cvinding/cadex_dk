@@ -5,7 +5,7 @@ namespace CONTROLLER;
  * Class NewsController
  * @package CONTROLLER
  * @author Christian Vinding Rasmussen
- * TODO description
+ * The controller for user input on the News endpoint
  */
 class NewsController extends \CONTROLLER\BASE\Controller {
 
@@ -17,16 +17,25 @@ class NewsController extends \CONTROLLER\BASE\Controller {
 
     /**
      * __construct is used for setting the Request class and initializing the NewsModel
+     * @param \Request $request
      */
     public function __construct(\Request $request) {
         parent::__construct($request);
         $this->newsModel = new \MODEL\NewsModel();
     }
 
+    /**
+     * create() is the method for creating news posts
+     * @param string $title
+     * @param string $content
+     * @return void
+     */
     public function create(string $title, string $content) : void {
 
+        // try and create the news post
         $result = $this->newsModel->createNewsPost($title, $content, $this->username);
 
+        // Attach message based on outcome
         if($result) {
             
             \HELPER\Logger::log($this->username, $this->request->remoteAddr, 1, 16);    
@@ -41,8 +50,16 @@ class NewsController extends \CONTROLLER\BASE\Controller {
         }
     }
 
+    /**
+     * update() is the method for updating news posts
+     * @param int $id
+     * @param string $title
+     * @param string $content
+     * @return void
+     */
     public function update(int $id, string $title, string $content) : void {
 
+        // try and update the news post
         $result = $this->newsModel->updateNewsPost($id, $title, $content, $this->username);
 
         // Attach message based on outcome
@@ -58,8 +75,14 @@ class NewsController extends \CONTROLLER\BASE\Controller {
 
     }
 
+    /**
+     * delete() is the method for deleting news posts
+     * @param int $id
+     * @return void
+     */
     public function delete(int $id) : void {
 
+        // try and delete the news post
         $result = $this->newsModel->deleteNewsPost($id);
 
         // Attach message based on outcome
