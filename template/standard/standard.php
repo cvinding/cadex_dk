@@ -2,7 +2,6 @@
 <html>
     <head>
         <title><?php echo $title; ?></title>
-        <?php echo $css; ?>
     </head>
     <body>
         <?php echo $navbar; ?>
