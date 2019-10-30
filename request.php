@@ -1,6 +1,6 @@
 <?php
-// Set Access-Control-Allow-Methods to POST, GET & OPTIONS
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+// Set Access-Control-Allow-Methods to POST, GET, PUT, DELETE (CRUD) & OPTIONS
+header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
 
 /**
  * Class Request
@@ -8,6 +8,12 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
  * Request is a class for defining a client Request
  */
 class Request {
+
+    /**
+     * An array for settings which request method is able to get an output from getBody()
+     * @var array $writeableMethods
+     */
+    private $writeableMethods = ["POST", "PUT"];
 
     /**
      * Request constructor.
@@ -19,6 +25,24 @@ class Request {
         $this->_SERVER();
 
         $this->validRemoteAddr = (filter_var($this->remoteAddr, FILTER_VALIDATE_IP) !== false);
+
+        if(isset($this->httpAuthorization)) {
+            // Set the scheme used
+            $scheme = "Bearer ";
+
+            // Check if scheme is part of authorization header
+            if(substr($this->httpAuthorization, 0, strlen($scheme)) !== $scheme) {
+                http_response_code(400);
+                exit(json_encode(["result" => "Authorization header not in compliance with 'Bearer <token>' scheme!", "status" => false]));
+            }
+
+            // Get the JWT token
+            $this->token = substr($this->httpAuthorization, strlen($scheme));
+        
+        } else {
+
+            $this->token = false;
+        }
 
         // Explode $fullPath into array
         $uri = explode("/", $this->requestUri);
@@ -56,7 +80,7 @@ class Request {
      * getBody() is used to return the request body
      * @return array
      */
-    /*public function getBody() : array {
+    public function getBody() : array {
         
         // If request method is not writeable then return empty array
         if(!in_array($this->requestMethod, $this->writeableMethods)) {
@@ -105,7 +129,7 @@ class Request {
 
         // Return the request body
         return $body;
-    }*/
+    }
 
     /**
      * snakeCaseToCamelCase() is used for converting snake_case to camelCase

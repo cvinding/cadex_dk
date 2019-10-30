@@ -27,15 +27,47 @@ class Database {
 
         try {
             // Load the database config
-            $config = \HELPER\ConfigLoader::load("config/database.php", ["DATABASE_DRIVER","HOSTNAME", "USERNAME", "PASSWORD", "DATABASE", "CHARSET"]);
+            $config = \HELPER\ConfigLoader::load("config/database.php");
 
         } catch (\Exception $e) {
             exit($e);
         }
 
-        $this->connection = new \PDO("{$config["DATABASE_DRIVER"]}:dbname={$config["DATABASE"]};charset={$config["CHARSET"]};host={$config["HOSTNAME"]}", $config["USERNAME"], $config["PASSWORD"]);
+        $error = 0;
 
-        $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        // Loop through each database server config, and try and find a suitable database server
+        foreach($config as $dbServer) {
+
+            try {
+
+                // Create connection
+                $this->connection = new \PDO($dbServer["DATABASE_DRIVER"] . ":dbname=" . $dbServer["DATABASE"] . ";charset=" . $dbServer["CHARSET"] . ";host=" . $dbServer["HOSTNAME"], $dbServer["USERNAME"], $dbServer["PASSWORD"]);
+                
+                // Set ATTR_ERRMODE to ERRMODE_EXCEPTION
+                $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+                // if $this->connection connected successfully to a database break the loop
+                break;
+
+            } catch(\PDOException $PDOException) {
+                // Increment $error counter
+                $error++;
+            }
+
+        }
+
+        try {
+
+            // If $error is the same as the amount of servers in the config file throw exception
+            if($error === sizeof($config)) {
+                throw new \Exception("Unable to connect to a database server.");
+            }
+
+        } catch (\Exception $exception) {
+            exit($exception);
+        }
+
+        // Set ATTR_EMULATE_PREPARES to false
         $this->connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
     }
 

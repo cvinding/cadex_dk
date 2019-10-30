@@ -11,7 +11,7 @@ class Router {
     /**
      * @var array $validRequestMethods
      */
-    private $validRequestMethods = ["POST", "GET"];
+    private $validRequestMethods = ["POST", "GET", "PUT", "DELETE"];
 
     /**
      * __call() is used to handle our request methods, e.g. $router->get() or $router->put()
@@ -34,7 +34,7 @@ class Router {
         $route = $parameters[0];
         $handler = $parameters[1];
 
-        $session = (isset($parameters[2])) ? $parameters[2] : [];
+        $token = (isset($parameters[2])) ? $parameters[2] : false;
 
         // Explode $route
         $explodedRoute = explode("/", $route);
@@ -55,7 +55,14 @@ class Router {
         $regex = "^".implode("\/", $explodedRegex)."$";
 
         // Set route into $method array
-        $this->{strtolower($method)}[$class][$action][$regex] = ["HANDLER" => $handler, "SESSION" => $session];
+        $this->{strtolower($method)}[$class][$action][$regex] = ["HANDLER" => $handler, "TOKEN" => $token];
+
+        // ["HANDLER" => $handler, "TOKEN" => false];
+        
+        // ["HANDLER" => $handler, "TOKEN" => true];
+
+        // ["HANDLER" => $handler, "TOKEN" => ["Web-SG", "IT-SG"]];
+
 
     }
 

@@ -26,23 +26,48 @@ class Database {
     public function __construct() {
 
         try {
-            // Load the database config
-            $config = \HELPER\ConfigLoader::load("config/database.php", ["DATABASE_DRIVER","HOSTNAME", "USERNAME", "PASSWORD", "DATABASE", "CHARSET"]);
 
-            // Check if specified driver is 'mysql'
-            if($config["DATABASE_DRIVER"] !== "mysql") {
-                throw new \Exception("Specified DATABASE_DRIVER does not support mysql database");
+            // Load the database config
+            $config = \HELPER\ConfigLoader::load("config/database.php");
+            
+            $error = 0;
+
+            // Loop through each config and check if there are any available servers
+            foreach($config as $dbServer) {
+
+                // Check if specified driver is 'mysql'
+                if($dbServer["DATABASE_DRIVER"] !== "mysql") {
+                    throw new \Exception("Specified DATABASE_DRIVER does not support mysql database");
+                }
+
+                // Create connection
+                $this->connection = new \mysqli($dbServer["HOSTNAME"], $dbServer["USERNAME"], $dbServer["PASSWORD"], $dbServer["DATABASE"]);
+
+                // If no error occurred set $config to this $dbServer and break the loop
+                if($this->connection->connect_errno === 0) {
+                    
+                    $currentConfig = $dbServer;
+                    break;
+                
+                // Increment $error counter 
+                } else {
+
+                    $error++;
+                }
+    
+            }
+           
+            // If $error is the same as the amount of servers in the config file throw exception
+            if($error === sizeof($config)) {
+                throw new \Exception("Unable to connect to a database server.");
             }
 
         } catch (\Exception $exception) {
             exit($exception);
         }
 
-        // Create connection
-        $this->connection = new \mysqli($config["HOSTNAME"], $config["USERNAME"], $config["PASSWORD"], $config["DATABASE"]);
-
         // Set charset
-        $this->connection->set_charset($config["CHARSET"]);
+        $this->connection->set_charset($currentConfig["CHARSET"]);
     }
 
     /**

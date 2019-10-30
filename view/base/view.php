@@ -1,70 +1,89 @@
 <?php
 namespace VIEW\BASE;
 
+/**
+ * Class View
+ * @package VIEW\BASE
+ * @author Christian Vinding Rasmussen
+ * View is the Base class of all views.
+ */
 class View {
 
-    private $title = "CADEX";
-
-    private $css = [
-        "/design/vendor/bootstrap-4.3.1/css/bootstrap.min.css",
-        "/design/css/stylesheet.css"
-    ];
-
+    /**
+     * An instance of the Request class
+     * @var \Request $request
+     */
     protected $request;
 
-    public function __construct(\Request $request){
+    /**
+     * The username from the token claims
+     * @var string $username
+     */
+    protected $username = null;
+
+    /**
+     * An array of http codes and what to output in the "status" response field
+     * @var array $statusTranslations
+     */
+    protected $statusTranslations = [
+        200 => true,
+        201 => true,
+        204 => true,
+        400 => false,
+        401 => false,
+        403 => false,
+        404 => false,
+        500 => false
+    ];
+
+    /**
+     * __construct() is used to set the Request class
+     * @param \Request $request
+     */
+    protected function __construct(\Request $request) {
         $this->request = $request;
+        
+        // Get and set username from token, if token is not false
+        if($this->request->token !== false) {
+            $this->username = (new \MODEL\AuthModel())->getTokenClaim($this->request->token, "uid");
+        }
     }
 
-    protected function render(string $template, array $variables = [], bool $fullTemplate = false) : string {
+    /**
+     * __call() is used to automatically output the endpoint controller output
+     * @param string $name
+     * @param array $parameters
+     */
+    public function __call(string $name, array $parameters) {
 
-        if($fullTemplate) {
-            $class = get_called_class();
-            $instance = new $class($this->request);
+        // Get messages
+        $messages = \HELPER\MessageHandler::getMessages();
 
-            $standardVariables = [
-                "title" => $instance->title, 
-                "navbar" => $this->render("ui-elements/navbar.php", ["login" => \SESSION\Session::get("LOGIN/STATUS")])
-            ];
-
-            unset($instance);
-
-            $variables = array_merge($standardVariables, $variables);
+        // If no message has been set return 500 + "No message" message
+        if(!isset($messages[0])) {
+            http_response_code(500);
+            
+            exit(json_encode(["result" => "No message", "status" => false]));
         }
 
-        $templatePath = APP_ROOT . "/template/{$template}";
+        // Output the message
+        $message = $messages[0];
 
-        // Check if template exists else throw exception
-        if(!file_exists($templatePath)) {
-            throw new \Exception("Unable to render template; '{$templatePath}' does not exists");
-        }
-
-        // Extract the variables
-        extract($variables);
-        
-        // Start output buffering
-        ob_start();
-        
-        // Require the template
-        require $templatePath;
-        
-        // Get the output buffered template
-        $renderedTemplate = ob_get_clean();
-        
-        // Return the rendered template
-        return $renderedTemplate;
-    }
-
-    private function createCSSLinks(array $links) : string {
-
-        $links = "";
-
-        foreach($links as $link) {
-            $links .= "<link href='" . $link . "' rel='stylesheet' type='text/css'>";
-        }
-
-        return $links;
-    }
-
+        http_response_code($message["httpCode"]);
     
+        exit($this->createJSONResponse($message["message"], $message["httpCode"]));
+    }
+
+    /**
+     * createJSONResponse() is used to create a simple API JSON response
+     * @param string $message
+     * @param int $httpCode
+     * @param string
+     */
+    protected function createJSONResponse(string $message, int $httpCode) : string {
+        $status = $this->statusTranslations[$httpCode];
+
+        return json_encode(["result" => $message, "status" => $status]);
+    }
+
 }
