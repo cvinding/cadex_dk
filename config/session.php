@@ -11,7 +11,9 @@ return [
 
     "LOGIN/STATUS" => false,
     
+    "USER" => [],
     "USER/ID" => false,
+    "USER/SECURITY_GROUPS" => [],
 
     "API/TOKEN" => false,
     

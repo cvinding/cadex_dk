@@ -29,6 +29,8 @@ class Request {
         // Shift next entry and set it as $class
         $this->class = (($class = array_shift($uri)) !== "") ? $class : "index";
 
+        $this->page = ($class !== "") ? $class : "";
+
         // If there is more entries set; shift next entry else set action false
         $this->action = (isset($uri[0]) && !empty($uri[0])) ? array_shift($uri) : false;
 

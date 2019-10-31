@@ -10,9 +10,11 @@ class ProductView extends \VIEW\BASE\View {
     }
 
     public function index() {
-        exit($this->render("standard/standard.php", [
+        $variables = [
             "content" => "Her kan du se vores produkter!"
-        ],true));
+        ];
+
+        exit($this->renderView("standard/standard.php", $variables));
     }
 
     private function createProductList() {

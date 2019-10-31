@@ -1,6 +1,12 @@
-<ul>
-    <li><a href='/'>Hjem</a></li>
-    <li><a href='/products'>Produkter</a></li>
-    <?php echo ($login) ? "<li><a href='/news'>News</a></li>" : "" ?>
-    <?php echo ($login) ? "<li><a href='/logout'>Logout</a></li>" : "<li><a href='/login'>Login</a></li>"; ?>
-</ul>
+<nav id="main-navbar" class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="/"><img width="120px" src="/design/assets/cadex_logo.png"></a>
+  
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarContent">
+    <?php echo $navItems; ?>
+  </div>
+</nav>

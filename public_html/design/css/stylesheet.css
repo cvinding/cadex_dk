@@ -1,0 +1,23 @@
+html {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    background-color: lightcoral;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    background-color: lightgreen;
+}
+
+.main {
+    min-height: 60%;
+    margin-bottom: 10%;
+    background-color: lightblue;
+}
+
+#main-navbar {
+    margin-bottom: 2.5%;
+}

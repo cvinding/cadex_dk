@@ -3,7 +3,7 @@ namespace VIEW\BASE;
 
 class View {
 
-    private $title = "CADEX";
+    public $title = "CADEX";
 
     private $css = [
         "/design/vendor/bootstrap-4.3.1/css/bootstrap.min.css",
@@ -16,55 +16,33 @@ class View {
         $this->request = $request;
     }
 
-    protected function render(string $template, array $variables = [], bool $fullTemplate = false) : string {
+    protected function renderView(string $template = "standard/standard.php", array $variables = []) : string {
 
-        if($fullTemplate) {
-            $class = get_called_class();
-            $instance = new $class($this->request);
+        $viewVariables = [
+            "title"     => $this->title, 
+            "css"       => $this->createCSSLinks($this->css),
+            "navbar"    => (new \VIEW\PARTIAL\NavbarView($this->request))->build(),
+            "footer"    => \HELPER\Renderer::render("ui-elements/footer.php")
+        ];
 
-            $standardVariables = [
-                "title" => $instance->title, 
-                "navbar" => $this->render("ui-elements/navbar.php", ["login" => \SESSION\Session::get("LOGIN/STATUS")])
-            ];
+        $variables = array_merge($viewVariables, $variables);
 
-            unset($instance);
+        return \HELPER\Renderer::render($template, $variables);
+    }
 
-            $variables = array_merge($standardVariables, $variables);
-        }
-
-        $templatePath = APP_ROOT . "/template/{$template}";
-
-        // Check if template exists else throw exception
-        if(!file_exists($templatePath)) {
-            throw new \Exception("Unable to render template; '{$templatePath}' does not exists");
-        }
-
-        // Extract the variables
-        extract($variables);
-        
-        // Start output buffering
-        ob_start();
-        
-        // Require the template
-        require $templatePath;
-        
-        // Get the output buffered template
-        $renderedTemplate = ob_get_clean();
-        
-        // Return the rendered template
-        return $renderedTemplate;
+    protected function addCSSLinks(array $links) {
+        $this->css = array_merge($this->css, $links);
     }
 
     private function createCSSLinks(array $links) : string {
 
-        $links = "";
+        $html = "";
 
         foreach($links as $link) {
-            $links .= "<link href='" . $link . "' rel='stylesheet' type='text/css'>";
+            $html .= "<link href='" . $link . "' rel='stylesheet' type='text/css'>";
         }
 
-        return $links;
+        return $html;
     }
 
-    
 }
