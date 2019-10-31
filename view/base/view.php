@@ -30,6 +30,24 @@ class View {
         return \HELPER\Renderer::render($template, $variables);
     }
 
+    /**
+     * CSRF_FIELD() is used for making a standard CSRF_FIELD in a form
+     * @return string
+     */
+    protected function CSRF_FIELD() {
+        try {
+            
+            // Get the CSRF/TOKEN from session
+            $CSRF = \SESSION\Session::get("CSRF/TOKEN");
+
+        } catch (\Exception $e){
+            exit($e);
+        }
+
+        // Return the input field
+        return '<input type="hidden" name="CSRF-TOKEN" value="' . $CSRF . '">';
+    }
+
     protected function addCSSLinks(array $links) {
         $this->css = array_merge($this->css, $links);
     }

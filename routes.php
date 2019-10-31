@@ -11,25 +11,10 @@ $router->get("/", "HomeView@index");
 
 $router->get("/products", "ProductView@index");
 
-$router->get("/news", function(\Request $request) {
+$router->get("/news", "NewsView@index", ["LOGIN/STATUS" => true]);
 
-    $html = "<h3>Here is some secret news</h3>";
-
-    $model = new \MODEL\BASE\Model();
-
-    var_dump($model->sendGET("/news/getAll"));
-
-    exit($html);
-
-}, ["LOGIN/STATUS" => true]);
-
-$router->get("/login", function(\Request $request) {
-
-    \SESSION\Session::set("LOGIN/STATUS", true);
-
-    header("location: /");
-    
-}, ["LOGIN/STATUS" => false]);
+$router->get("/login", "LoginView@index", ["LOGIN/STATUS" => false]);
+$router->post("/login/authenticate", "LoginController@authenticate", ["LOGIN/STATUS" => false]);
 
 $router->get("/logout", function(\Request $request) {
 

@@ -70,7 +70,7 @@ class Dispatcher {
 
             // Check if $reflection instance has the $actionToCall method and call it if so
             if($reflection->hasMethod($actionToCall)) {
-                call_user_func_array([new $classes["CONTROLLER"]($request), $actionToCall], array_merge($request->uriArgs, $request->getBody()));
+                call_user_func_array([new $classes["CONTROLLER"]($request), $actionToCall], $request->uriArgs);
             }
         }
 
