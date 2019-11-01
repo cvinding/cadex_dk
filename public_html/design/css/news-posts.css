@@ -1,0 +1,23 @@
+ul.news-posts {
+    background-color: #dee1e3;
+    padding: 10px;
+    list-style: none;
+    border-bottom: 1px solid #000;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+ul.news-posts > li.news-posts-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+ul.news-posts > li.news-posts-content {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+ul.news-posts > li.news-posts-author {
+    font-size: 13px;
+    font-style: italic;
+}

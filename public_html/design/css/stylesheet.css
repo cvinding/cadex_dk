@@ -2,22 +2,24 @@ html {
     padding: 0;
     margin: 0;
     height: 100%;
-    background-color: lightcoral;
+    background-color:#eeefef;
 }
 
 body {
     padding: 0;
     margin: 0;
     height: 100%;
-    background-color: lightgreen;
+    background: transparent;
 }
 
 .main {
     min-height: 60%;
     margin-bottom: 10%;
-    background-color: lightblue;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
 }
 
-#main-navbar {
+img {
     margin-bottom: 2.5%;
 }

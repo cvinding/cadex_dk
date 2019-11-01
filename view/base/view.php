@@ -48,6 +48,41 @@ class View {
         return '<input type="hidden" name="CSRF-TOKEN" value="' . $CSRF . '">';
     }
 
+    protected function createPageNavigator(string $url, int $page, int $total) {
+        $previosPage = $page - 1;
+        $nextPage = $page + 1;
+
+        $pageNavigator = '<nav>';
+            $pageNavigator .= '<ul class="pagination">';
+
+                if($previosPage !== 0) {
+                    $pageNavigator .= '<li class="page-item">';
+                        $pageNavigator .= '<a class="page-link" href="' . $url . $previosPage . '" aria-label="Forrige">';
+                        $pageNavigator .= '<span aria-hidden="true">&laquo;</span>';
+                        $pageNavigator .= '<span class="sr-only">Forrige</span>';
+                        $pageNavigator .= '</a>';
+                    $pageNavigator .= '</li>';
+                }
+
+                for($i = 1; $i <= $total; $i++) {
+                    $pageNavigator .= '<li class="page-item"><a class="page-link" href="'. $url . $i .'">' . $i . '</a></li>';
+                }
+
+                if($nextPage <= $total) {
+                    $pageNavigator .= '<li class="page-item">';
+                        $pageNavigator .= '<a class="page-link" href="' . $url . $nextPage . '" aria-label="Næste">';
+                        $pageNavigator .= '<span aria-hidden="true">&raquo;</span>';
+                        $pageNavigator .= '<span class="sr-only">Næste</span>';
+                        $pageNavigator .= '</a>';
+                    $pageNavigator .= '</li>';
+                }
+
+            $pageNavigator .= '</ul>';
+        $pageNavigator .= '</nav>';
+
+        return $pageNavigator;
+    }
+
     protected function addCSSLinks(array $links) {
         $this->css = array_merge($this->css, $links);
     }

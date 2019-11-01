@@ -12,6 +12,7 @@ $router->get("/", "HomeView@index");
 $router->get("/products", "ProductView@index");
 
 $router->get("/news", "NewsView@index", ["LOGIN/STATUS" => true]);
+$router->get("/news/p/(\d+)", "NewsView@index", ["LOGIN/STATUS" => true]);
 
 $router->get("/login", "LoginView@index", ["LOGIN/STATUS" => false]);
 $router->post("/login/authenticate", "LoginController@authenticate", ["LOGIN/STATUS" => false]);

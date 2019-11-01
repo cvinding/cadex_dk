@@ -6,6 +6,7 @@
     </head>
     <body>
         <?php echo $navbar; ?>
+        <img src="/design/assets/cadex_auto_hq.svg" width="100%">
         <div class='main container'>
             <?php echo $content; ?>
         </div>
