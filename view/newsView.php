@@ -5,6 +5,8 @@ class NewsView extends \VIEW\BASE\View {
 
     public $title = "CADEX - Nyheder";
 
+    public $imageHeader = false;
+
     public function __construct(\Request $request) {
         parent::__construct($request);
         $this->addCSSLinks([

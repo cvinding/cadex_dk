@@ -3,6 +3,7 @@ html {
     margin: 0;
     height: 100%;
     background-color:#eeefef;
+    font-family: sans-serif;
 }
 
 body {
@@ -14,12 +15,35 @@ body {
 
 .main {
     min-height: 60%;
+    padding: 10px;
+    background-color: #dcdde1;
     margin-bottom: 10%;
-    background-color: #fff;
+}
+
+.main > .container {
+    background-color: #dcdde1;
     padding: 10px;
     border-radius: 5px;
 }
 
-img {
+/*.image-header {
     margin-bottom: 2.5%;
+}*/
+
+.image-header > .text-output {
+    z-index: 1;
+    font-weight: bold;
+    font-size: 72px;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
+
+}
+
+.image-header > img {
+    z-index: 99;
 }

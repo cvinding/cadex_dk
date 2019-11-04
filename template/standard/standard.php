@@ -6,9 +6,13 @@
     </head>
     <body>
         <?php echo $navbar; ?>
-        <img src="/design/assets/cadex_auto_hq.svg" width="100%">
-        <div class='main container'>
-            <?php echo $content; ?>
+        
+        <?php echo (isset($imageHeader)) ? $imageHeader : ""; ?>
+
+        <div class="main">
+            <div class="container">
+                <?php echo $content; ?>
+            </div>
         </div>
         <?php //echo $footer; ?>
     </body>

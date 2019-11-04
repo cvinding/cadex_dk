@@ -5,6 +5,10 @@ class View {
 
     public $title = "CADEX";
 
+    public $imageHeader = true;
+    public $imageHeaderText = "Cadex A/S";
+    public $imageHeaderSource = "/design/assets/cadex_auto_hq.svg";
+
     private $css = [
         "/design/vendor/bootstrap-4.3.1/css/bootstrap.min.css",
         "/design/css/stylesheet.css"
@@ -24,6 +28,15 @@ class View {
             "navbar"    => (new \VIEW\PARTIAL\NavbarView($this->request))->build(),
             "footer"    => \HELPER\Renderer::render("ui-elements/footer.php")
         ];
+
+        if($this->imageHeader) {
+            $imageHeader = \HELPER\Renderer::render("ui-elements/image-header.php",["text" => $this->imageHeaderText, "src" => $this->imageHeaderSource]);
+
+            $viewVariables["imageHeader"] = $imageHeader;
+        }
+
+
+        
 
         $variables = array_merge($viewVariables, $variables);
 

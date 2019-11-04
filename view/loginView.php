@@ -5,6 +5,8 @@ class LoginView extends \VIEW\BASE\View {
 
     public $title = "CADEX - Log ind";
 
+    public $imageHeader = false;
+
     public function __construct(\Request $request) {
         parent::__construct($request);
     }
