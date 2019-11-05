@@ -10,6 +10,7 @@
 $router->get("/", "HomeView@index");
 
 $router->get("/products", "ProductView@index");
+$router->get("/products/product/(\d+)", "ProductView@getProduct");
 
 $router->get("/news", "NewsView@index", ["LOGIN/STATUS" => true]);
 $router->get("/news/p/(\d+)", "NewsView@index", ["LOGIN/STATUS" => true]);

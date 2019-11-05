@@ -14,13 +14,23 @@ class ProductView extends \VIEW\BASE\View {
         parent::__construct($request);
         $this->productModel = new \MODEL\ProductModel();
         $this->addCSSLinks([
-            "/design/css/product-list.css"
+            "/design/css/product-stylesheet.css"
         ]);
     }
 
     public function index(int $page = 1) {
         $variables = [
             "content" => $this->createProductList($page)
+        ];
+
+        exit($this->renderView("standard/standard.php", $variables));
+    }
+
+    public function getProduct(int $id) {
+        $this->imageHeader = false;
+
+        $variables = [
+            "content" => $this->createProductView($id)
         ];
 
         exit($this->renderView("standard/standard.php", $variables));
@@ -37,7 +47,7 @@ class ProductView extends \VIEW\BASE\View {
         $rows = ceil(sizeof($products) / $perRow);
 
         for($i = 0; sizeof($products) < ($rows * $perRow); $i++) {
-            $products[] = ["id" => $i, "name" => "placeholder", "description" => "placeholder", "price" => "n/a"];
+            $products[] = ["id" => false, "name" => "placeholder", "description" => "placeholder", "price" => "n/a"];
         }
 
         $html = '';
@@ -52,14 +62,14 @@ class ProductView extends \VIEW\BASE\View {
 
             $formatedDescription = \HELPER\StringHelper::previewString($product["description"], 10);
 
-            $html .= '<div class="card">';
+            $html .= ($product["id"] !== false) ? '<a class="card" href="/products/product/' . $product["id"] . '">' : '<div class="card">';
                 $html .= '<img class="card-img-top" src="' . $imageString . '" alt="Card image cap" height="225px">';
                 $html .= '<div class="card-body">';
                     $html .= '<h4 class="card-title">' . $product["name"] . '</h4>';
                     $html .= '<p class="card-text">' . $formatedDescription . '</p>';
                 $html .= '</div>';                 
                 $html .= '<div class="card-footer"><p class="card-text">Start pris: ' . number_format((float)$product["price"],2,",",".") . ' kr.</p></div>';
-            $html .= '</div>';
+            $html .= ($product["id"] !== false) ? '</a>' : '</div>';
 
             if(($index % $perRow) === ($perRow - 1)) {
                 $html .= '</div>';
@@ -68,5 +78,47 @@ class ProductView extends \VIEW\BASE\View {
 
         return $html;
     }
+
+    private function createProductView(int $id) {
+
+        $product = $this->productModel->getProductById($id);
+
+        if(empty($product)) {
+            header("location: /products");
+        }
+
+        $product = $product["result"][0];
+
+        $carousel = new \VIEW\PARTIAL\CarouselView();
+        $carousel->id = "product-carousel";
+
+        $tempImages = [];
+
+        foreach($product["images"] as $images) {
+            $tempImages[] = 'data:' . $images["type"] . ';base64,' . $images["image"];
+        }
+        
+        $carousel->images = $tempImages;
+
+        $html = '<div class="product-output">';
+            $html .= '<div class="row">';
+                $html .= '<div class="col-sm-6">';
+                    $html .= $carousel->build();
+                $html .= '</div>';
+                $html .= '<div class="col-sm-1">';
+                    $html .= '&nbsp;';
+                $html .= '</div>';
+                $html .= '<div class="col-sm-5">';
+                    $html .= '<h3>' . $product["name"] . '</h3>';
+                    $html .= '<p>' . $product["description"] . '</p>';
+                    $html .= '<p>Start pris: '. number_format($product["price"], 2, ",", ".") .'</p>';
+                $html .= '</div>';
+           $html .= '</div>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    
 
 }

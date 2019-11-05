@@ -11,6 +11,7 @@ class View {
 
     private $css = [
         "/design/vendor/bootstrap-4.3.1/css/bootstrap.min.css",
+        "/design/vendor/font-awesome/css/all.css",
         "/design/css/stylesheet.css"
     ];
 
@@ -34,9 +35,6 @@ class View {
 
             $viewVariables["imageHeader"] = $imageHeader;
         }
-
-
-        
 
         $variables = array_merge($viewVariables, $variables);
 

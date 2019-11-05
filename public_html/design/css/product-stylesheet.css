@@ -1,0 +1,17 @@
+.card-deck {
+    margin-bottom: 2%;
+}
+
+a.card {
+    color: #000;
+    text-decoration: none;
+}
+
+a.card:hover {
+    background-color: #bfbfbf;
+}
+
+#product-carousel {
+    
+    background-color: green;
+}

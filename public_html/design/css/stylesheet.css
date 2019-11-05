@@ -4,6 +4,7 @@ html {
     height: 100%;
     background-color:#eeefef;
     font-family: sans-serif;
+    overflow-x: hidden;
 }
 
 body {
@@ -26,10 +27,6 @@ body {
     border-radius: 5px;
 }
 
-/*.image-header {
-    margin-bottom: 2.5%;
-}*/
-
 .image-header > .text-output {
     z-index: 1;
     font-weight: bold;
@@ -41,9 +38,22 @@ body {
     transform: translate(-50%, -50%);
     color: #fff;
     text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
-
 }
 
 .image-header > img {
     z-index: 99;
+}
+
+#main-footer {
+    padding: 15px 10px 15px 10px;
+}
+
+#main-footer > div > div > ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+#main-footer > div > div > ul > li > a {
+    color: #fff;
 }

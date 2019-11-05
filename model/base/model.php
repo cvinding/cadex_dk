@@ -27,7 +27,24 @@ class Model {
     }
 
     protected function sendGET(string $endpoint) : array {
-        return $this->sendRequest("GET", $endpoint);
+   
+        $savedResponses = \SESSION\Session::get("API/RESPONSES");
+    
+        if(!isset($savedResponses[$endpoint]) || (isset($savedResponses[$endpoint]["expires"]) && $savedResponses[$endpoint]["expires"] < time())) {
+
+            $response = $this->sendRequest("GET", $endpoint);
+
+            $savedResponses[$endpoint] = $response;
+            $savedResponses[$endpoint]["expires"] = time() + 600;
+
+            \SESSION\Session::set("API/RESPONSES", $savedResponses);
+
+        } else {
+
+            $response = $savedResponses[$endpoint];
+        }
+
+        return $response;
     }
 
     protected function sendPOST(string $endpoint, array $data) {
@@ -76,7 +93,7 @@ class Model {
     }
 
     public function __destruct() {
-        curl_close($this->cURL);
+        ($this->cURL !== false) ? curl_close($this->cURL) : null;
     }
 
 }

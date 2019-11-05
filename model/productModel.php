@@ -7,5 +7,15 @@ class ProductModel extends \MODEL\BASE\Model {
         return $this->sendGET("/product/getAll/" . $page)["result"];
     }
 
+    public function getProductById($id) {
+
+        $response = $this->sendGET("/product/get/" . $id);
+
+        if(!$response["status"]) {
+            return [];
+        }
+
+        return $response;
+    }
 
 }

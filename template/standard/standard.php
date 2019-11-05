@@ -14,6 +14,6 @@
                 <?php echo $content; ?>
             </div>
         </div>
-        <?php //echo $footer; ?>
+        <?php echo $footer; ?>
     </body>
 </html>
