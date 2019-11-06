@@ -33,7 +33,9 @@ class DateHelper {
 
         try {
 
-            $d = new \DateTime($date);
+            $d = new \DateTime($date, new \DateTimeZone("UTC"));
+
+            $d->setTimezone(new \DateTimeZone("Europe/Copenhagen"));
 
         } catch (\Exception $e) {
             exit($e);

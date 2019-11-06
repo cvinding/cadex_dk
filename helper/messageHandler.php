@@ -21,8 +21,8 @@ class MessageHandler {
      * @param int $httpCode
      * @return void
      */
-    public static function attachMessage(string $message, int $httpCode = 200) : void {
-        self::$messages[] = ["message" => $message, "httpCode" => $httpCode];
+    public static function attachMessage(string $message, string $type = "success") : void {
+        self::$messages[] = ["message" => $message, "type" => $type];
     }
 
     /**

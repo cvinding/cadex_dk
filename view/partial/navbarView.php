@@ -9,6 +9,7 @@ class NavbarView extends \VIEW\PARTIAL\BASE\PartialView {
         "Hjem" => ["url" => ""],
         "Produkter" => ["url" => "products"],
         "Nyheder" => ["url" => "news", "session" => ["LOGIN/STATUS" => true]],
+        "Admin" => ["url" => "administrate", "session" => ["USER/SECURITY_GROUPS" => "IT_SG"]],
         "Log ind" => ["url" => "login", "session" => ["LOGIN/STATUS" => false], "right" => true],
         "Log ud" => ["url" => "logout", "session" => ["LOGIN/STATUS" => true], "right" => true]
     ];
@@ -49,11 +50,23 @@ class NavbarView extends \VIEW\PARTIAL\BASE\PartialView {
                         $sessions[$name] = \SESSION\Session::get($name);
                     }
 
-                    if($sessions[$name] !== $expectedValue) {
-                        $dontShow = true;
-                        break;
+                    if(is_array($sessions[$name])) {
+
+                        if(!in_array($expectedValue, $sessions[$name])) {
+                            $dontShow = true;
+                            break;
+                        }
+
+                    } else {
+
+                        if($sessions[$name] !== $expectedValue) {
+                            $dontShow = true;
+                            break;
+                        }
+    
                     }
 
+                   
                 }
 
                 if($dontShow) {

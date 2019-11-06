@@ -7,6 +7,8 @@ class CompanyModel extends \MODEL\BASE\Model {
         return $this->sendGET("/company/information");
     }
 
-
+    public function getLogs(int $page = 1) {
+        return $this->sendGET("/company/getLogs/" . $page, false);
+    }
 
 }

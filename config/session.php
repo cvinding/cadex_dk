@@ -15,7 +15,6 @@ return [
     "USER/ID" => false,
     "USER/SECURITY_GROUPS" => [],
 
-
     "API" => [],
     "API/TOKEN" => false,
     "API/RESPONSES" => [],

@@ -12,7 +12,7 @@
       <h5>Relevante links:</h5>
       <ul>
         <li><a href="/contact"><i class="fas fa-phone"></i> Kontakt os</a></li>
-        <li><a href="/">Relevant link</a></li>
+        <li><a href="/update">Opdater siden</a></li>
       </ul>
     </div>
     <div class="col-sm-4">  

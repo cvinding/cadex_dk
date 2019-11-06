@@ -41,10 +41,21 @@ class Dispatcher {
             // Loop through each session defined in $routeArray
             foreach($routeArray["SESSION"] as $name => $value) {
 
-                // If a $_SESSION does not have the same value as the current one in $routeArray, redirect
-                if(\SESSION\Session::get($name) !== $value) {
-                    header("location: /");
+                if(is_array(\SESSION\Session::get($name))) {
+
+                    if(!in_array($value, \SESSION\Session::get($name))) {
+                        header("location: /");
+                    }
+
+                } else {
+
+                    // If a $_SESSION does not have the same value as the current one in $routeArray, redirect
+                    if(\SESSION\Session::get($name) !== $value) {
+                        header("location: /");
+                    }
+
                 }
+              
             }
         }
 

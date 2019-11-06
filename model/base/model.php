@@ -13,7 +13,6 @@ class Model {
     private $writableRequestMethods = ["POST", "PUT"];
 
     public function __construct() {
-        
         try {
 
             $config = \HELPER\ConfigLoader::load("config/api.php",["PROTOCOL", "BASE_URL"]);
@@ -26,8 +25,12 @@ class Model {
 
     }
 
-    protected function sendGET(string $endpoint) : array {
+    protected function sendGET(string $endpoint, bool $cache = true) : array {
    
+        if(!$cache) {
+            return $this->sendRequest("GET", $endpoint);
+        }
+
         $savedResponses = \SESSION\Session::get("API/RESPONSES");
     
         if(!isset($savedResponses[$endpoint]) || (isset($savedResponses[$endpoint]["expires"]) && $savedResponses[$endpoint]["expires"] < time())) {
@@ -50,6 +53,14 @@ class Model {
     protected function sendPOST(string $endpoint, array $data) {
         return $this->sendRequest("POST", $endpoint, $data);
     } 
+
+    protected function sendPUT(string $endpoint, array $data) {
+        return $this->sendRequest("PUT", $endpoint, $data);
+    }
+
+    protected function sendDELETE(string $endpoint) {
+        return $this->sendRequest("DELETE", $endpoint);
+    }
 
     private function sendRequest(string $method, string $endpoint, array $data = []) {
 

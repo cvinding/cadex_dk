@@ -94,6 +94,32 @@ class View {
         return $pageNavigator;
     }
 
+    protected function createAlert(string $type, string $message, bool $dismissible = false, string $strong = null) {
+
+        if($strong === null) {
+            $defaultStrong = ["danger" => "Error!", "warning" => "Warning!", "info" => "Info", "success" => "Success!"];
+            $strong = $defaultStrong[$type];
+        }
+
+        if($dismissible) {
+        
+            $output = "<div class='alert alert-{$type} alert-dismissible fade show' role='alert'>";
+                $output .= "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
+                    $output .= "<span aria-hidden='true'>&times;</span>";
+                $output .= "</button>";
+                $output .= "<strong>{$strong}</strong> {$message}";
+            $output .= "</div>";
+        
+        } else {
+        
+            $output = "<div class='alert alert-{$type}' role='alert'>";
+                $output .= "<strong>{$strong}</strong> {$message}";
+            $output .= "</div>";
+        }
+        
+        return $output;
+    }
+
     protected function addCSSLinks(array $links) {
         $this->css = array_merge($this->css, $links);
     }

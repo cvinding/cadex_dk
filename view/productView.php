@@ -38,7 +38,7 @@ class ProductView extends \VIEW\BASE\View {
 
     private function createProductList(int $page) {
 
-        $products = $this->productModel->getAll($page);
+        $products = $this->productModel->getProducts($page)["result"];
 
         $products = $products["products"];
 
