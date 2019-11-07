@@ -33,5 +33,4 @@ class AdministratorController extends \CONTROLLER\BASE\Controller {
 
     }
 
-
 }

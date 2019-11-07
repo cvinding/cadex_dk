@@ -73,6 +73,7 @@ class Model {
         if($this->cURL === false) {
             $this->cURL = curl_init();
             curl_setopt($this->cURL, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($this->cURL, CURLOPT_SSL_VERIFYPEER, false);
         }
 
         curl_setopt($this->cURL, CURLOPT_URL, $this->baseURL . $endpoint);
@@ -87,7 +88,7 @@ class Model {
         }
     
         if(in_array(strtoupper($method), $this->writableRequestMethods) && !empty($data)) {
-            curl_setopt($this->cURL, CURLOPT_POSTFIELDS, http_build_query($data));    
+            curl_setopt($this->cURL, CURLOPT_POSTFIELDS, http_build_query($data));        
         }
 
         $rawResponse = curl_exec($this->cURL);

@@ -3,7 +3,7 @@
   <?php echo (isset($msg)) ? $msg : ""; ?>
   <?php echo $CSRF_FIELD; ?>
   <div class="form-group">
-    <label for="select"><?php echo $title; ?></label>
+    <label for="select"><?php echo $title; ?>*</label>
     <select class="form-control" name="id" required="required" id="select">
         <option value="false" selected="selected" disabled="disabled"><?php echo $title; ?></option>
         <?php echo $options; ?>
