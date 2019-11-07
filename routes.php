@@ -18,6 +18,7 @@ $router->get("/update", function($request) {
 });
 
 $router->get("/products", "ProductView@index");
+$router->get("/products/p/(\d+)", "ProductView@index");
 $router->get("/products/product/(\d+)", "ProductView@getProduct");
 
 $router->get("/news", "NewsView@index", ["LOGIN/STATUS" => true]);

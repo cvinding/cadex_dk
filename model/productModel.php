@@ -68,12 +68,11 @@ class ProductModel extends \MODEL\BASE\Model {
 
         $endpoint .= ($thumbnail) ? "true" : "false";
 
-var_dump($endpoint);
+//var_dump($endpoint);
 
-        var_dump($this->sendPOST($endpoint, [
-            "image" => $image["tmp_name"]
-        ]));
+        $response = $this->sendBPOST($endpoint, file_get_contents($image["tmp_name"]));
 
+        var_dump($response);
     }
 
 }

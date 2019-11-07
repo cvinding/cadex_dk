@@ -20,6 +20,8 @@ class AuthModel extends \MODEL\BASE\Model {
 
         $validateResponse = $validateResponse["result"];
 
+        session_regenerate_id();
+
         \SESSION\Session::set("LOGIN/STATUS", true);
         \SESSION\Session::set("API/TOKEN", $authenticateResponse["token"]);
         \SESSION\Session::set("USER/ID", $validateResponse["user"]);
