@@ -26,25 +26,27 @@ class Model {
     }
 
     protected function sendGET(string $endpoint, bool $cache = true) : array {
-   
+
         if(!$cache) {
             return $this->sendRequest("GET", $endpoint);
         }
 
-        $savedResponses = \SESSION\Session::get("API/RESPONSES");
-    
-        if(!isset($savedResponses[$endpoint]) || (isset($savedResponses[$endpoint]["expires"]) && $savedResponses[$endpoint]["expires"] < time())) {
+        $exists = \HELPER\Cacher::cacheExists($endpoint);
 
-            $response = $this->sendRequest("GET", $endpoint);
+        if($exists) {
 
-            $savedResponses[$endpoint] = $response;
-            $savedResponses[$endpoint]["expires"] = time() + 600;
+            $response = \HELPER\Cacher::getCache($endpoint);
 
-            \SESSION\Session::set("API/RESPONSES", $savedResponses);
+            if(isset($response["expires"]) && $response["expires"] < time()) {
+
+                $response = $this->sendRequest("GET", $endpoint);
+                \HELPER\Cacher::cache($endpoint, $response);
+            } 
 
         } else {
 
-            $response = $savedResponses[$endpoint];
+            $response = $this->sendRequest("GET", $endpoint);
+            \HELPER\Cacher::cache($endpoint, $response);
         }
 
         return $response;
@@ -161,6 +163,27 @@ class Model {
         }
 
         return $response;
+    }
+
+    private function cacheImages(array $products) {
+
+        $images = [];
+
+        $cacheName = "products.json";
+
+        foreach($products as $index => $product) {
+
+            if(!isset($product["images"]) || empty($product["images"])) {
+                continue;
+            }
+
+            $images[$product["id"]] = $product["images"]; 
+            $products[$index]["images"] = $cacheName;
+        }
+
+        \HELPER\ImageCacher::cache($images, $cacheName);
+
+        return $products;
     }
 
     public function __destruct() {
