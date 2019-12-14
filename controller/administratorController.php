@@ -33,4 +33,12 @@ class AdministratorController extends \CONTROLLER\BASE\Controller {
 
     }
 
+    public function reset() {
+        $model = new \MODEL\ProductModel();
+
+        $model->resetPrices();
+
+        header("location: /administrate/product");
+    }
+
 }

@@ -7,6 +7,10 @@ class ProductModel extends \MODEL\BASE\Model {
         return $this->sendGET("/product/getAll/" . $page, $cache);
     }
 
+    public function getProductsImg(int $images, int $page = 1, bool $cache = true) {
+        return $this->sendGET("/product/getAll/img/" . $images . "/" . $page, $cache);
+    }
+
     public function getProductById($id) {
 
         $response = $this->sendGET("/product/get/" . $id);
@@ -16,6 +20,30 @@ class ProductModel extends \MODEL\BASE\Model {
         }
 
         return $response;
+    }
+
+    public function getAll() {
+
+        $allProducts = [];
+
+        $loop = true;
+        $i = 1;
+        while($loop) {
+
+            $result = $this->getProductsImg(0, $i, false);
+
+            if($result["status"] === false || $this->lastHTTPCode === 404 || $i === 10) {
+                break;
+            } 
+
+            //TODO: fix API endpoint
+
+            $allProducts = array_merge($allProducts, $result["result"]["products"]);
+
+            $i++;            
+        }
+
+        return $allProducts;
     }
 
     public function addProduct(string $name, string $description, string $price) {
@@ -58,6 +86,7 @@ class ProductModel extends \MODEL\BASE\Model {
             }
         }
 
+        return true;
     }
 
     private function uploadImage(int $productId, array $image, bool $thumbnail = false) {
@@ -71,4 +100,16 @@ class ProductModel extends \MODEL\BASE\Model {
         return $response["status"];
     }
 
+    public function deleteProduct(int $id) : bool {
+        $response = $this->sendDELETE("/product/delete/" . $id);
+    
+        return $response["status"];
+    }
+
+    public function resetPrices() {
+        $response = $this->sendPUT("/product/reset", []);
+
+        return $response["status"];
+    }
+    
 }

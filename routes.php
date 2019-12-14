@@ -36,8 +36,11 @@ $router->get("/administrate/product", "AdministratorView@list", ["USER/SECURITY_
 $router->get("/administrate/product/(add|edit|delete)", "AdministratorView@getForm", ["USER/SECURITY_GROUPS" => "IT_SG"]);
 $router->post("/administrate/product/(add|edit|delete)/submit", "Administrator@submit", ["USER/SECURITY_GROUPS" => "IT_SG"]);
 $router->post("/administrate/product/(edit|delete)/confirm", "AdministratorView@confirm", ["USER/SECURITY_GROUPS" => "IT_SG"]);
+$router->post("/administrate/product/edit/form", "AdministratorView@getForm", ["USER/SECURITY_GROUPS" => "IT_SG"]);
+$router->post("/administrate/product/reset", "AdministratorController@reset", ["USER/SECURITY_GROUPS" => "IT_SG"]);
 
 $router->get("/administrate/logs", "AdministratorView@logs", ["USER/SECURITY_GROUPS" => "IT_SG"]);
+$router->get("/administrate/logs/(\d+)", "AdministratorView@logs", ["USER/SECURITY_GROUPS" => "IT_SG"]);
 
 $router->get("/login", "LoginView@index", ["LOGIN/STATUS" => false]);
 $router->post("/login/authenticate", "LoginController@authenticate", ["LOGIN/STATUS" => false]);

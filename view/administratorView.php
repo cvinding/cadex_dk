@@ -1,18 +1,33 @@
 <?php
 namespace VIEW;
 
+use Request;
+
 class AdministratorView extends \VIEW\BASE\View {
 
     public $title = "CADEX - Admin";
 
     public $imageHeader = false;
 
+    public function __construct(\Request $request) {
+        parent::__construct($request);
+        $this->addCSSLinks([
+            "/design/css/administrate.css"
+        ]);
+    }
+
     public function index() {
 
-        $html = '<ul>';
-            $html .= '<li><a href="/administrate/news">Administrate news</a></li>';
-            $html .= '<li><a href="/administrate/product">Administrate products</a></li>';
-            $html .= '<li><a href="/administrate/logs">See API logs</a></li>';
+        $html = '<nav aria-label="breadcrumb">';
+            $html .= '<ol class="breadcrumb">';
+                $html .= '<li class="breadcrumb-item active" aria-current="page">Dashboard</li>';
+            $html .= '</ol>';
+        $html .= '</nav>';
+
+        $html .= '<ul>';
+            $html .= '<li><a class="btn btn-link" href="/administrate/news">Administrate news</a></li>';
+            $html .= '<li><a class="btn btn-link" href="/administrate/product">Administrate products</a></li>';
+            $html .= '<li><a class="btn btn-link" href="/administrate/logs">See API logs</a></li>';
         $html .= '</ul>';
 
         exit($this->renderView("standard/standard.php", ["content" => $html]));
@@ -20,12 +35,27 @@ class AdministratorView extends \VIEW\BASE\View {
 
     public function list() {
 
-        $html = '<ul>';
+        $html = '<nav aria-label="breadcrumb">';
+            $html .= '<ol class="breadcrumb">';
+                $html .= '<li class="breadcrumb-item"><a href="/administrate">Dashboard</a></li>';
+                $html .= '<li class="breadcrumb-item active" aria-current="page">Administrate ' . $this->request->action . '</li>';
+            $html .= '</ol>';
+        $html .= '</nav>';
+
+        $html .= '<ul>';
             $html .= '<li><a class="btn btn-success" href="/administrate/' . $this->request->action .'/add">Add ' . $this->request->action . '</a></li>';
             $html .= '<li><a class="btn btn-warning" href="/administrate/' . $this->request->action .'/edit">Edit ' . $this->request->action . '</a></li>';
             $html .= '<li><a class="btn btn-danger" href="/administrate/' . $this->request->action .'/delete">Delete ' . $this->request->action . '</a></li>';
         $html .= '</ul>';
 
+        if($this->request->action === "product") {
+            
+            $html .= '<form class="form" action="/administrate/product/reset" method="POST">';
+                $html .= $this->CSRF_FIELD();
+                $html .= '<input class="btn btn-danger" type="submit" name="reset" value="Reset Crawler prices">';
+            $html .= '</form>';
+        }
+        
         exit($this->renderView("standard/standard.php", ["content" => $html]));
     }
 
@@ -46,22 +76,39 @@ class AdministratorView extends \VIEW\BASE\View {
             $template["msg"] = $this->createAlert($messages[0]["type"],$messages[0]["message"], true);
         }
 
+        $html = '<nav aria-label="breadcrumb">';
+            $html .= '<ol class="breadcrumb">';
+                $html .= '<li class="breadcrumb-item"><a href="/administrate">Dashboard</a></li>';
+                $html .= '<li class="breadcrumb-item"><a href="/administrate/'.$type.'">Administrate ' . $type .'</a></li>';
+                $html .= '<li class="breadcrumb-item active" aria-current="page">'. ucfirst($action) . ' ' . $type . '</li>';
+            $html .= '</ol>';
+        $html .= '</nav>';
+
+        $variables["content"] = $html;
+
         if(($action === "delete" || $action === "edit") && $thirdOption !== "form") {
         
-            $variables["content"] = $this->createOptionsHTML($type, $action, $template);
+            $variables["content"] .= $this->createOptionsHTML($type, $action, $template);
         
         } else if($thirdOption === "form") {
 
             $instance = \HELPER\Dynamic::instance($type,"MODEL");
             $result = \HELPER\Dynamic::call($instance, "get" . $type. "ById", [$_POST["id"], false]);
 
-            $template["data"] = ["title" => $result["result"][0]["title"], "content" => $result["result"][0]["content"]];   
+            $tempData = [];
 
-            $variables["content"] = \HELPER\Renderer::render("admin/" . $action . "-" . $type . ".php", $template);
+            foreach($result["result"][0] as $key => $value) {
+
+                $tempData[$key] = $value;
+            }
+
+            $template["data"] = $tempData;
+
+            $variables["content"] .= \HELPER\Renderer::render("admin/" . $action . "-" . $type . ".php", $template);
 
         } else {
 
-            $variables["content"] = \HELPER\Renderer::render("admin/" . $action . "-" . $type . ".php", $template);
+            $variables["content"] .= \HELPER\Renderer::render("admin/" . $action . "-" . $type . ".php", $template);
         }
 
         exit($this->renderView("standard/standard.php", $variables));
@@ -95,18 +142,25 @@ class AdministratorView extends \VIEW\BASE\View {
         exit($this->renderView("standard/standard.php", $variables));
     }
 
-    public function logs() {
+    public function logs(int $page = 1) {
 
         $companyModel = new \MODEL\CompanyModel();
 
-        $logs = $companyModel->getLogs();
+        $logs = $companyModel->getLogs($page);
 
-        $html = '<table class="table">';
+        $html = '<nav aria-label="breadcrumb">';
+            $html .= '<ol class="breadcrumb">';
+                $html .= '<li class="breadcrumb-item"><a href="/administrate">Dashboard</a></li>';
+                $html .= '<li class="breadcrumb-item active" aria-current="page">Logs</li>';
+            $html .= '</ol>';
+        $html .= '</nav>';
+
+        $html .= '<table class="table table-striped table-light">';
             $html .= '<thead>';
                 $html .= '<tr>';
                     $html .= '<td>#</td>';
                     $html .= '<td>User</td>';
-                    $html .= '<td>IP</td>';
+                    //$html .= '<td>IP</td>';
                     $html .= '<td>Action</td>';
                     $html .= '<td>Message</td>';
                     $html .= '<td>Timestamp</td>';
@@ -118,7 +172,7 @@ class AdministratorView extends \VIEW\BASE\View {
                 $html .= '<tr>';
                     $html .= '<td>' . $entry["id"] . '</td>';
                     $html .= '<td>' . $entry["user"] . '</td>';
-                    $html .= '<td>' . $entry["ip"] . '</td>';
+                    //$html .= '<td>' . $entry["ip"] . '</td>';
                     $html .= '<td>' . $entry["action"] . '</td>';
                     $html .= '<td>' . $entry["message"] . '</td>';
                     $html .= '<td>' . \HELPER\DateHelper::formatDate($entry["created_at"]) . '</td>';
@@ -127,6 +181,33 @@ class AdministratorView extends \VIEW\BASE\View {
 
             $html .= '</tbody>';
         $html .= '</table>';
+
+
+        $pageNavigator = '<nav>';
+            $pageNavigator .= '<ul class="pagination">';
+
+                if($page !== 1) {
+                    $pageNavigator .= '<li class="page-item">';
+                        $pageNavigator .= '<a class="page-link" href="/administrate/logs/' . ($page - 1) . '" aria-label="Forrige">';
+                        $pageNavigator .= '<span aria-hidden="true">&laquo;</span>';
+                        $pageNavigator .= '<span class="sr-only">Forrige</span>';
+                        $pageNavigator .= '</a>';
+                    $pageNavigator .= '</li>';
+                }
+
+                if(sizeof($logs["result"]) === 12) {
+                    $pageNavigator .= '<li class="page-item">';
+                        $pageNavigator .= '<a class="page-link"  href="/administrate/logs/' . ($page + 1) . '" aria-label="Næste">';
+                        $pageNavigator .= '<span aria-hidden="true">&raquo;</span>';
+                        $pageNavigator .= '<span class="sr-only">Næste</span>';
+                        $pageNavigator .= '</a>';
+                    $pageNavigator .= '</li>';
+                }
+
+            $pageNavigator .= '</ul>';
+        $pageNavigator .= '</nav>';
+
+        $html .= $pageNavigator;
 
         exit($this->renderView("standard/standard.php", ["content" => $html]));
     }
@@ -137,6 +218,17 @@ class AdministratorView extends \VIEW\BASE\View {
 
         foreach($news as $post) {
             $html .= '<option value="' . $post["id"] . '">' . $post["title"] . " - [" . $post["author"] . "] - [" . \HELPER\DateHelper::formatDate($post["created_at"],"m-d-Y H:i") . ']</option>';
+        }
+
+        return $html;
+    }
+
+    private function createProductOptions(array $products) {
+
+        $html = '';
+
+        foreach($products as $product) {
+            $html .= '<option value="' . $product["id"] . '">' . $product["name"] . " - [" . \HELPER\DateHelper::formatDate($product["created_at"],"m-d-Y H:i") . ']</option>';
         }
 
         return $html;
@@ -161,7 +253,8 @@ class AdministratorView extends \VIEW\BASE\View {
             "action" => $action,
             "type" => $type,
             "CSRF_FIELD" => $this->CSRF_FIELD(),
-            "options" => $options
+            "options" => $options,
+            "btnType" => ($action === "edit") ? "warning" : "danger"
         ];
 
         $variables = array_merge($variables, $localVariables);

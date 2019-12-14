@@ -9,5 +9,5 @@
         <?php echo $options; ?>
     </select>
   </div>
-  <input class="btn btn-danger" type="submit" name="<?php echo $action ?>" value="<?php echo ucfirst($action) ?> <?php echo $type ?>">
+  <input class="btn btn-<?php echo $btnType; ?>" type="submit" name="<?php echo $action ?>" value="<?php echo ucfirst($action) ?> <?php echo $type ?>">
 </form>
