@@ -122,13 +122,26 @@ class AdministratorView extends \VIEW\BASE\View {
      */
     public function confirm(string $type) : void {
         
-        $html = '<form method="POST" action="/administrate/' . $this->request->action . '/'. $type .'/submit">';
+        $html = '<form method="POST" action="/administrate/' . $this->request->action . '/'. $type .'/submit" enctype="multipart/form-data">';
 
             $html .= "<h3>Are you sure you want to proceed?</h3>";
 
             foreach($_POST as $name => $value) {
-                $html .= '<input type="hidden" name="' . $name . '" value="' . $value . '">';
+                
+                if(is_array($value)) {
+
+                    foreach($value as $entry) {
+                        $html .= '<input type="hidden" name="' . $name . '[]" value="' . $entry . '">';
+                    }
+
+                } else {
+                    
+                    $html .= '<input type="hidden" name="' . $name . '" value="' . $value . '">';
+                }
+                
             }
+            
+            \SESSION\Session::set("TEMP/FILES", $_FILES);
 
             $html .= '<input type="submit" class="btn btn-primary" value="Confirm" name="confirm">';
             $html .= '<a class="btn btn-secondary" href="/administrate/' . $this->request->action . '/'. $type .'">Cancel</a>';

@@ -9,6 +9,9 @@ class LoginView extends \VIEW\BASE\View {
 
     public function __construct(\Request $request) {
         parent::__construct($request);
+        $this->addCSSLinks([
+            "/design/css/stylesheet.css"
+        ]);
     }
 
     public function index() {
@@ -21,7 +24,7 @@ class LoginView extends \VIEW\BASE\View {
 
     private function createLoginForm() {
 
-        $html = '<form method="POST" action="/login/authenticate">';
+        $html = '<form id="login-form" method="POST" action="/login/authenticate">';
             $html .= $this->CSRF_FIELD();
             $html .= '<div class="form-group">';
                 $html .= '<label for="username">Brugernavn</label>';

@@ -57,3 +57,10 @@ body {
 #main-footer > div > div > ul > li > a {
     color: #fff;
 }
+
+#login-form {
+    background-color: #fff;
+    padding: 10px;
+    margin-right: 26%;
+    margin-left: 26%;
+}

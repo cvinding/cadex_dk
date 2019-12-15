@@ -92,9 +92,15 @@ class Model {
         $token = \SESSION\Session::get("API/TOKEN");
 
         if($token !== false) {
-            curl_setopt($this->cURL, CURLOPT_HTTPHEADER, [
+            $headers = [
                 "Authorization: Bearer " . $token
-            ]);    
+            ];
+
+            if($sendAsJSON) {
+                $headers[] = "Content-type: application/json";
+            }
+
+            curl_setopt($this->cURL, CURLOPT_HTTPHEADER, $headers);    
         }
     
         if(in_array(strtoupper($method), $this->writableRequestMethods) && !empty($data)) {
@@ -102,7 +108,7 @@ class Model {
             if($sendAsJSON) {
 
                 curl_setopt($this->cURL, CURLOPT_POSTFIELDS, json_encode($data));        
-
+               
             } else {
 
                 curl_setopt($this->cURL, CURLOPT_POSTFIELDS, http_build_query($data));        
@@ -165,7 +171,7 @@ class Model {
         return $response;
     }
 
-    private function cacheImages(array $products) {
+    /*private function cacheImages(array $products) {
 
         $images = [];
 
@@ -184,7 +190,7 @@ class Model {
         \HELPER\ImageCacher::cache($images, $cacheName);
 
         return $products;
-    }
+    }*/
 
     public function __destruct() {
         ($this->cURL !== false) ? curl_close($this->cURL) : null;

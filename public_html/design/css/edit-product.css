@@ -1,0 +1,21 @@
+.image-with-cross {
+    overflow: hidden;
+    display: inline-block;
+    margin-right: 5px;
+    padding: 3px;
+}
+.image-with-cross.image-deleted {
+    background-color: red;
+}
+.image-with-cross.newly-uploaded {
+    background-color: #00aa00;
+}
+.image-with-cross > .close {
+    z-index: 999;
+    left: -20px;
+    position: relative;
+}
+.image-with-cross > img {
+    height: 100px;
+    z-index: 0;
+}

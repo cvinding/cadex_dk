@@ -11,9 +11,9 @@ class ProductModel extends \MODEL\BASE\Model {
         return $this->sendGET("/product/getAll/img/" . $images . "/" . $page, $cache);
     }
 
-    public function getProductById($id) {
+    public function getProductById($id, $cache = true) {
 
-        $response = $this->sendGET("/product/get/" . $id);
+        $response = $this->sendGET("/product/get/" . $id, $cache);
 
         if(!$response["status"]) {
             return [];
@@ -86,6 +86,44 @@ class ProductModel extends \MODEL\BASE\Model {
             }
         }
 
+        return true;
+    }
+
+    public function editProduct(int $id, string $name, string $description, float $price, array $imagesToDelete = []){
+        
+        $data = [
+            "name" => $name, 
+            "description" => $description, 
+            "price" => $price
+        ];
+
+        if(!empty($imagesToDelete)) {
+            $data["imagesToDelete"] = $imagesToDelete;
+        }
+        
+        $response = $this->sendPUT("/product/update/" . $id, $data, true);
+
+        if(!$response["status"]) {
+            return false;
+        }
+
+        if(isset($_FILES["imageUpload"]) && sizeof($_FILES["imageUpload"]["name"]) > 0) {
+            
+            $files = $_FILES["imageUpload"];
+
+            for($i = 0; $i < sizeof($files["name"]); $i++) {
+                $image = [
+                    "name" => $files["name"][$i], 
+                    "type" => $files["type"][$i], 
+                    "tmp_name" => $files["tmp_name"][$i], 
+                    "error" => $files["error"][$i], 
+                    "size" => $files["size"][$i]
+                ];
+
+                $this->uploadImage($id,$image);
+            }
+        }
+        
         return true;
     }
 
