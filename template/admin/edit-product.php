@@ -42,7 +42,7 @@
   <div class="form-group">
     <input type="file" name="imageUpload[]" class="instant-image-upload">
   </div>
-  <input type="submit" class="btn btn-warning" name="edit" value="Edit product">
+  <input type="button" class="btn btn-warning" name="edit" value="Edit product" id="submit-form">
   <a class="btn btn-secondary" href="/administrate/product/edit">Cancel</a>
 </form>
 <script src="/design/js/edit-product.js"></script>

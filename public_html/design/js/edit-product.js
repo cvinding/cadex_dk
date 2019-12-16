@@ -119,12 +119,19 @@ instantImageUpload[1].addEventListener("change", instantUpload, false);
 instantImageUpload[1].myParameter = "image-output";
 
 // On submit clean up any existing placeholder file uploads
-document.getElementsByTagName("form")[0].addEventListener("submit", function() {
+document.getElementById("submit-form").addEventListener("click", function() {
 
-    const placeholderFileUploads = document.getElementsByClassName("instant-image-upload");
+    const form = this.parentElement;
 
-    for(let index in placeholderFileUploads) {
-        placeholderFileUploads[index].name = "";
+    if(confirm("Are you sure you want to edit this product?")) {
+
+        const placeholderFileUploads = document.getElementsByClassName("instant-image-upload");
+
+        for(let index in placeholderFileUploads) {
+            placeholderFileUploads[index].name = "";
+        }
+
+        form.submit();
     }
 
 });
